@@ -5,10 +5,11 @@ import {
   Get,
   Param,
   ParseIntPipe,
-  Patch,
   Post,
   Put,
   Query,
+  SetMetadata,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -18,6 +19,8 @@ import { UpdateProductDto } from './dto/update.product';
 import { FilterProductDto } from './dto/filter.product.dto';
 import { ProductValidationPipe } from './pipes/product.validation.pipe';
 import { Product } from './product.entity';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/auth/role.guard';
 
 @Controller('products')
 export class ProductsController {
@@ -31,6 +34,8 @@ export class ProductsController {
   // the GET request to the /products endpoint
   // and return the list of products
   @Get('/')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @SetMetadata('roles', ['admin'])
   getAllProducts(
     @Query(ValidationPipe) filterProductDto: FilterProductDto,
   ): Promise<Product[]> {
@@ -50,6 +55,8 @@ export class ProductsController {
   // the POST request to the /products endpoint
   // and create a new product
   @Post('/')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @SetMetadata('roles', ['superAdmin'])
   @UsePipes(ValidationPipe)
   createProduct(@Body() createProductDto: CreateProductDto): Promise<Product> {
     return this.productsService.createProduct(createProductDto);
@@ -59,6 +66,8 @@ export class ProductsController {
   // the patch request to the /products/:id endpoint
   // and update a single product
   @Put('/:id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @SetMetadata('roles', ['superAdmin', 'admin'])
   updateProductById(
     @Param('id', ParseIntPipe) id: number,
     @Body(ProductValidationPipe) updateProductDto: UpdateProductDto,
@@ -71,6 +80,8 @@ export class ProductsController {
   // the DELETE request to the /products/:id endpoint
   // and delete a single product
   @Delete('/:id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @SetMetadata('roles', ['superAdmin'])
   deleteProductById(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.productsService.deleteProductById(id);
   }
