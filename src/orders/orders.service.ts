@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -15,8 +16,6 @@ import { ProductsService } from 'src/products/products.service';
 export class OrdersService {
   constructor(
     @InjectRepository(Order) private orderRepository: Repository<Order>,
-
-    // use the product service to get the product details
     private productService: ProductsService,
   ) {}
   async create(createOrderDto: CreateOrderDto) {
@@ -45,74 +44,83 @@ export class OrdersService {
       });
       return await this.orderRepository.save(orderInstance);
     } catch (error) {
-      return new BadRequestException(error.message);
+      throw new InternalServerErrorException(error);
     }
   }
 
   async findAll(user: User) {
-    // find all orders with userId and also send the product details
+    try {
+      const data = await this.orderRepository.find({
+        relations: ['user', 'product'],
+        select: ['id', 'status', 'quantity'],
+        where: { user: { id: user.id } },
+      });
 
-    const data = await this.orderRepository.find({
-      relations: ['user', 'product'],
-      select: ['id', 'status', 'quantity'],
-      where: { user: { id: user.id } },
-    });
+      // no data found exception
 
-    // no data found exception
+      if (data.length === 0) {
+        throw new NotFoundException('No order found');
+      }
 
-    if (data.length === 0) {
-      throw new NotFoundException('No order found');
+      return data;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
-
-    return data;
   }
 
   async findOne(id: number, user: User): Promise<Order> {
-    // find one order with userId and also send the product details
-    const orderData = await this.orderRepository.findOne({
-      relations: ['user', 'product'],
-      where: { id: id, user: { id: user.id } },
-    });
+    try {
+      const orderData = await this.orderRepository.findOne({
+        relations: ['user', 'product'],
+        where: { id: id, user: { id: user.id } },
+      });
 
-    // no data found exception
-    if (!orderData) {
-      throw new NotFoundException('Order not found');
+      // no data found exception
+      if (!orderData) {
+        throw new NotFoundException('Order not found');
+      }
+
+      return orderData;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
-
-    return orderData;
   }
 
   async update(id: number, updateOrderDto: UpdateOrderDto) {
-    // order exists or not
-    const orderData = this.orderRepository.findOne({ where: { id: id } });
+    try {
+      // order exists or not
+      const orderData = this.orderRepository.findOne({ where: { id: id } });
 
-    if (!orderData) {
-      throw new NotFoundException('Order not found');
-    }
-
-    console.log('order', updateOrderDto);
-
-    // destructuring the updateOrderDto
-    const { status, productList } = updateOrderDto;
-
-    // Product exists or not
-    for (const product of productList) {
-      const productData = this.productService.getProductByIdForOrder(
-        product.product.name,
-      );
-      if (!productData) {
-        throw new NotFoundException('Product not found');
+      if (!orderData) {
+        throw new NotFoundException('Order not found');
       }
+
+      console.log('order', updateOrderDto);
+
+      // destructuring the updateOrderDto
+      const { status, productList } = updateOrderDto;
+
+      // Product exists or not
+      for (const product of productList) {
+        const productData = this.productService.getProductByIdForOrder(
+          product.product.name,
+        );
+        if (!productData) {
+          throw new NotFoundException('Product not found');
+        }
+      }
+
+      // update the order quantity and status
+      const updateData = await this.orderRepository.update(id, {
+        status: status,
+        quantity: productList.length,
+      });
+
+      // update the order
+      return updateData;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
-
-    // update the order quantity and status
-    const updateData = await this.orderRepository.update(id, {
-      status: status,
-      quantity: productList.length,
-    });
-
-    // update the order
-    return updateData;
   }
 
   remove(id: number, user: User) {

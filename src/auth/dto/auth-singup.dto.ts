@@ -4,9 +4,7 @@ import { Exclude } from 'class-transformer';
 import { User } from '../auth.entity';
 
 export class AuthSignupDto {
-  @IsString()
-  @IsNotEmpty()
-  username: string;
+  username?: string;
 
   @IsEmail()
   @IsNotEmpty()

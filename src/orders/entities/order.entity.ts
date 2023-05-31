@@ -23,10 +23,13 @@ export class Order extends BaseEntity {
 
   @Column()
   quantity: number;
+
   @Column()
   status: string;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: string;
+
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',

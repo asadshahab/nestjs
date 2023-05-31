@@ -5,7 +5,6 @@ import { Product } from 'src/products/product.entity';
 export class CreateOrderDto {
   @IsNotEmpty()
   productList: { product: Product; quantity: number }[];
-  //   @IsNotEmpty()
   user: User;
   status?: string;
 }
