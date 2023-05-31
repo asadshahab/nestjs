@@ -35,7 +35,7 @@ export class ProductsController {
   // and return the list of products
   @Get('/')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @SetMetadata('roles', ['admin'])
+  @SetMetadata('roles', ['admin', 'superAdmin'])
   getAllProducts(
     @Query(ValidationPipe) filterProductDto: FilterProductDto,
   ): Promise<Product[]> {

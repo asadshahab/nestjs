@@ -2,11 +2,13 @@ import {
   BaseEntity,
   Column,
   Entity,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-import { UserRole } from './user-role.enum';
 import { Exclude, Expose } from 'class-transformer';
+import { Order } from 'src/orders/entities/order.entity';
 
 @Entity()
 @Unique(['username'])
@@ -29,4 +31,7 @@ export class User extends BaseEntity {
   @Column()
   @Exclude()
   password: string;
+
+  @OneToMany((type) => Order, (order) => order.user)
+  order: Order;
 }
