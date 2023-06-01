@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './product.entity';
@@ -20,7 +15,9 @@ export class ProductsService {
   ) {}
 
   /**
-   * @param
+   * @description find one and create
+   * @param createProductDto
+   * @returns
    */
   async findOneAndCreate(createProductDto: CreateProductDto): Promise<Product> {
     try {
@@ -30,6 +27,11 @@ export class ProductsService {
     }
   }
 
+  /**
+   * @description find all products
+   * @param filterProductDto
+   * @returns The array of products that match the filter criteria
+   */
   async getAllProducts(filterProductDto: FilterProductDto): Promise<Product[]> {
     try {
       const { name, status } = filterProductDto;
@@ -49,7 +51,11 @@ export class ProductsService {
     }
   }
 
-  // create a method that will be used to return a single product
+  /**
+   * @description find product by id
+   * @param id
+   * @returns The product with the specified ID.
+   */
   async getProductById(id: number): Promise<Product> {
     try {
       const data = await this.productRepository.findOne({ where: { id: id } });
@@ -60,7 +66,11 @@ export class ProductsService {
     }
   }
 
-  // get by id for order
+  /**
+   * @description find product by name
+   * @param name
+   * @returns The product with the specified name.
+   */
   async getProductByIdForOrder(name: string): Promise<Product> {
     try {
       const data = await this.productRepository.findOne({
@@ -72,18 +82,24 @@ export class ProductsService {
     }
   }
 
-  // create a method that will be used to create a new product
+  /**
+   * @description add a product
+   * @param createProductDto
+   * @returns the product that was created
+   */
   async createProduct(createProductDto: CreateProductDto): Promise<Product> {
     const data = await this.productRepository.save(createProductDto);
     if (!data) throw new BadRequestException(`Product not created`);
     return data;
   }
 
-  // create a method that will be used to update a product
-  async updateProductById(
-    id: number,
-    updateProductDto: UpdateProductDto,
-  ): Promise<Product> {
+  /**
+   * @description find product by id and update
+   * @param id
+   * @param updateProductDto
+   * @returns The product with the specified ID.
+   */
+  async updateProductById(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
     try {
       const product = await this.getProductById(id);
       Object.assign(product, updateProductDto);
@@ -95,8 +111,12 @@ export class ProductsService {
     }
   }
 
-  // create a method that will be used to delete a product
-  async deleteProductById(id: number): Promise<void> {
+  /**
+   * @description find product by id and delete
+   * @param id
+   * @returns The product with the specified ID.
+   */
+  async deleteProductById(id: number): Promise<Product> {
     try {
       const data = await this.getProductById(id);
       if (data) {

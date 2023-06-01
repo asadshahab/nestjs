@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Post,
@@ -21,68 +22,92 @@ import { ProductValidationPipe } from './pipes/product.validation.pipe';
 import { Product } from './product.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/role.guard';
+import { ProductResponsePayload } from './dto/product-response.dto';
 
 @Controller('products')
 export class ProductsController {
-  //@des
-  // create a constructor with a private property
-  // that will be used to inject the service
   constructor(private readonly productsService: ProductsService) {}
 
-  //@des
-  // create a method that will be used to handle
-  // the GET request to the /products endpoint
-  // and return the list of products
+  /**
+   *
+   * @param filterProductDto
+   * @returns
+   */
   @Get('/')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @SetMetadata('roles', ['admin', 'superAdmin'])
-  getAllProducts(
-    @Query(ValidationPipe) filterProductDto: FilterProductDto,
-  ): Promise<Product[]> {
+  getAllProducts(@Query(ValidationPipe) filterProductDto: FilterProductDto): Promise<Product[]> {
     return this.productsService.getAllProducts(filterProductDto);
   }
 
-  //@des
-  // create a method that will be used to handle
-  // the GET request to the /products/:id endpoint
-  // and return a single product
+  /**
+   *
+   * @param id
+   * @returns
+   */
   @Get('/:id')
-  getProductById(@Param('id', ParseIntPipe) id: number): Promise<Product> {
-    return this.productsService.getProductById(id);
+  async getProductById(@Param('id', ParseIntPipe) id: number): Promise<ProductResponsePayload> {
+    const product = await this.productsService.getProductById(id);
+    const response = {
+      status: HttpStatus.OK,
+      message: 'Product retrieved successfully',
+    };
+    return { response, data: product };
   }
-  //@des
-  // create a method that will be used to handle
-  // the POST request to the /products endpoint
-  // and create a new product
+
+  /**
+   *
+   * @param createProductDto
+   * @returns
+   */
   @Post('/')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @SetMetadata('roles', ['superAdmin'])
   @UsePipes(ValidationPipe)
-  createProduct(@Body() createProductDto: CreateProductDto): Promise<Product> {
-    return this.productsService.createProduct(createProductDto);
+  async createProduct(@Body() createProductDto: CreateProductDto): Promise<ProductResponsePayload> {
+    const product = await this.productsService.createProduct(createProductDto);
+    const response = {
+      status: HttpStatus.CREATED,
+      message: 'Product created successfully',
+    };
+    return { response, data: product };
   }
-  // @des
-  // create a method that will be used to handle
-  // the patch request to the /products/:id endpoint
-  // and update a single product
+
+  /**
+   *
+   * @param id
+   * @Body updateProductDto
+   * @returns
+   */
   @Put('/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @SetMetadata('roles', ['superAdmin', 'admin'])
-  updateProductById(
+  async updateProductById(
     @Param('id', ParseIntPipe) id: number,
     @Body(ProductValidationPipe) updateProductDto: UpdateProductDto,
-  ): Promise<Product> {
-    return this.productsService.updateProductById(id, updateProductDto);
+  ): Promise<ProductResponsePayload> {
+    const updatedProduct = await this.productsService.updateProductById(id, updateProductDto);
+    const response = {
+      status: HttpStatus.OK,
+      message: 'Product updated successfully',
+    };
+    return { response, data: updatedProduct };
   }
 
-  // @des
-  // create a method that will be used to handle
-  // the DELETE request to the /products/:id endpoint
-  // and delete a single product
+  /**
+   *
+   * @param id
+   * @returns
+   */
   @Delete('/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @SetMetadata('roles', ['superAdmin'])
-  deleteProductById(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.productsService.deleteProductById(id);
+  async deleteProductById(@Param('id', ParseIntPipe) id: number): Promise<ProductResponsePayload> {
+    const deletedProduct = await this.productsService.deleteProductById(id);
+    const response = {
+      status: HttpStatus.OK,
+      message: 'Product deleted successfully',
+    };
+    return { response, data: deletedProduct };
   }
 }
