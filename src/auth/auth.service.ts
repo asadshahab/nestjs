@@ -3,26 +3,36 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
 import { User } from './auth.entity';
 import { AuthSignupDto, accessTokenPayloadDTO } from './dto/auth-singup.dto';
-import * as bcrypt from 'bcrypt';
 import { AuthSignInDto } from './dto/auth-singin.dto ';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './jwt-payload.interfase';
+import { HashPassword } from 'src/common/hash-password';
 
 @Injectable()
 export class AuthService {
-  // inject the repository from entity
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private jwtService: JwtService,
   ) {}
 
-  // Get all users
-  async getUsers(): Promise<User[]> {
-    return await this.userRepository.find();
+  /**
+   * @description get all users
+   * @returns all users
+   */
+  async getUsers(query): Promise<User[]> {
+    console.log(query);
+    return await this.userRepository.find({
+      skip: query.skip,
+      take: query.take,
+    });
   }
 
-  // Get single user
+  /**
+   * @description get one user
+   * @param email
+   * @returns one user
+   */
   async getUser(email: string): Promise<User> {
     try {
       const user = await this.userRepository.findOne({ where: { email } });
@@ -32,7 +42,11 @@ export class AuthService {
     }
   }
 
-  //   sing-up user
+  /**
+   * @description sign-up user
+   * @param authSignupDto
+   * @returns the user created
+   */
   async signupUser(authSignupDto: AuthSignupDto): Promise<User> {
     try {
       const { email, password } = authSignupDto;
@@ -42,10 +56,6 @@ export class AuthService {
       if (user) {
         throw new ConflictException('User already exists');
       }
-
-      // hash the password
-      authSignupDto.password = await bcrypt.hash(password, 10);
-
       return await this.userRepository.save(authSignupDto);
     } catch (error) {
       // server error  exception
@@ -53,7 +63,12 @@ export class AuthService {
     }
   }
 
-  //   sing-in user
+  /**
+   * @description sign-in user
+   * @param authSignInDto
+   * @returns the user signed-in
+   * @returns the access token
+   */
   async signInUser(authSignInDto: AuthSignInDto): Promise<accessTokenPayloadDTO> {
     try {
       const { email, password } = authSignInDto;
@@ -64,7 +79,7 @@ export class AuthService {
       }
 
       // compare the password
-      const isMatch = await bcrypt.compare(password, userData.password);
+      const isMatch = await HashPassword.compare(password, userData.password);
       if (!isMatch) {
         throw new UnauthorizedException('Invalid credentials');
       }

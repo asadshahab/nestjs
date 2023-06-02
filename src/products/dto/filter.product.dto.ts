@@ -1,15 +1,7 @@
+import { PickType } from '@nestjs/mapped-types';
 import { IsOptional } from 'class-validator';
+import { CreateProductDto } from './create.product.dto';
 
-export class FilterProductDto {
-  @IsOptional()
-  name: string;
-
-  @IsOptional()
-  description: string;
-
-  @IsOptional()
-  price: number;
-
-  @IsOptional()
-  status: string;
+export class FilterProductDto extends PickType(CreateProductDto, ['description', 'price', 'status']) {
+  name?: string;
 }

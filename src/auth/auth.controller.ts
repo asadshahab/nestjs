@@ -9,15 +9,15 @@ import {
   Req,
   UseInterceptors,
   ClassSerializerInterceptor,
-  HttpCode,
   HttpStatus,
+  Param,
+  Query,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from './auth.entity';
 import { AuthSignupDto, accessTokenPayloadDTO } from './dto/auth-singup.dto';
 import { AuthSignInDto } from './dto/auth-singin.dto ';
 import { AuthGuard } from '@nestjs/passport';
-import { classToPlain, plainToClass } from 'class-transformer';
 import { AuthResponsePayload } from './dto/auth-response.dto';
 import { AuthSingInResponsePayload } from './dto/auth-singin-response.dto';
 
@@ -32,13 +32,9 @@ export class AuthController {
    */
   @Get('/')
   @UseGuards(AuthGuard())
-  async getUsers(@Req() req): Promise<AuthResponsePayload> {
-    const users = await this.authService.getUsers();
-    const response = {
-      status: HttpStatus.OK,
-      message: 'Users retrieved successfully',
-    };
-    return { response, data: users };
+  async getUsers(@Req() req, @Query() query: { skip: number; take: number }): Promise<AuthResponsePayload> {
+    const users = await this.authService.getUsers(query);
+    return { response: { status: HttpStatus.FOUND, message: 'Users retrieved successfully' }, data: users };
   }
 
   /**
@@ -50,11 +46,7 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   async signupUser(@Body() authSignupDto: AuthSignupDto): Promise<AuthSingInResponsePayload> {
     const user = await this.authService.signupUser(authSignupDto);
-    const response = {
-      status: HttpStatus.CREATED,
-      message: 'User created successfully',
-    };
-    return { response, data: user };
+    return { response: { status: HttpStatus.CREATED, message: 'user created successfully' }, data: user };
   }
 
   /**
@@ -67,10 +59,6 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   async signInUser(@Body() authSignInDto: AuthSignInDto): Promise<AuthSingInResponsePayload> {
     const { user, accessToken } = await this.authService.signInUser(authSignInDto);
-    const response = {
-      status: HttpStatus.OK,
-      message: 'User logged in successfully',
-    };
-    return { response, data: user, accessToken };
+    return { response: { status: HttpStatus.OK, message: 'user logged in successfully' }, data: user, accessToken };
   }
 }

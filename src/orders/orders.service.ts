@@ -12,6 +12,13 @@ import { Product } from 'src/products/product.entity';
 export class OrdersService {
   constructor(@InjectRepository(Order) private orderRepository: Repository<Order>, private productService: ProductsService) {}
 
+  /**
+   *
+   * @param status
+   * @param products
+   * @param user
+   * @returns return the  created order
+   */
   async createOrder(status: string, products: Product[], user: User): Promise<Order> {
     try {
       const orderInstance = this.orderRepository.create({
@@ -26,6 +33,11 @@ export class OrdersService {
     }
   }
 
+  /**
+   * @description create order
+   * @param createOrderDto
+   * @returns return the  created order
+   */
   async create(createOrderDto: CreateOrderDto): Promise<Order> {
     try {
       const { productList, status, user } = createOrderDto;
@@ -49,6 +61,11 @@ export class OrdersService {
     }
   }
 
+  /**
+   * @description get all orders
+   * @param user
+   * @returns return all orders
+   */
   async findAll(user: User) {
     try {
       const data = await this.orderRepository.find({
@@ -69,6 +86,12 @@ export class OrdersService {
     }
   }
 
+  /**
+   * @description get one order
+   * @param id
+   * @param user
+   * @returns return one order
+   */
   async findOne(id: number, user: User): Promise<Order> {
     try {
       const orderData = await this.orderRepository.findOne({
@@ -87,6 +110,13 @@ export class OrdersService {
     }
   }
 
+  /**
+   * @description update order
+   * @param id
+   * @param updateOrderDto
+   * @param user
+   * @returns return the updated order
+   */
   async update(id: number, updateOrderDto: UpdateOrderDto, user: User) {
     try {
       // order exists or not
@@ -116,6 +146,12 @@ export class OrdersService {
     }
   }
 
+  /**
+   * @description remove order
+   * @param id
+   * @param user
+   * @returns return the deleted order
+   */
   async remove(id: number, user: User) {
     // order exists or not
     this.findOne(id, user);

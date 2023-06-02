@@ -1,14 +1,11 @@
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { ProductStatus } from './product-status.enum';
+import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Order } from 'src/orders/entities/order.entity';
+
+export enum ProductStatus {
+  // define the values of the enum
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+}
 
 @Entity()
 export class Product extends BaseEntity {

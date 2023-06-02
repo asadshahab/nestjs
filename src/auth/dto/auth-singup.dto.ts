@@ -1,7 +1,6 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { UserRole } from '../user-role.enum';
 import { Exclude } from 'class-transformer';
-import { User } from '../auth.entity';
+import { User, UserRole } from '../auth.entity';
 
 export class AuthSignupDto {
   username?: string;
