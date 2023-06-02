@@ -11,8 +11,6 @@ import {
   UseGuards,
   Req,
   Query,
-  NotFoundException,
-  HttpCode,
   HttpStatus,
   DefaultValuePipe,
   ParseIntPipe,
@@ -20,13 +18,10 @@ import {
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { User } from 'src/auth/auth.entity';
-import { Product } from 'src/products/product.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/role.guard';
 import { Order } from './entities/order.entity';
 import { OrderResponsePayload } from './dto/oreder-response.dto';
-import { FindAllOrderResponsePayload } from './dto/find-all-oreder-response.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
 @Controller('orders')

@@ -6,9 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm.config';
 import { AuthModule } from './auth/auth.module';
 import { OrdersModule } from './orders/orders.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeOrmConfig), ProductsModule, AuthModule, OrdersModule],
+  imports: [ConfigModule.forRoot({ envFilePath: '.dev.env' }), TypeOrmModule.forRoot(typeOrmConfig), ProductsModule, AuthModule, OrdersModule],
   controllers: [AppController],
   providers: [AppService],
 })
