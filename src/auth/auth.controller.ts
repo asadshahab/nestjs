@@ -12,6 +12,8 @@ import {
   HttpStatus,
   Param,
   Query,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from './auth.entity';
@@ -20,6 +22,7 @@ import { AuthSignInDto } from './dto/auth-singin.dto ';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthResponsePayload } from './dto/auth-response.dto';
 import { AuthSingInResponsePayload } from './dto/auth-singin-response.dto';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 @Controller('auth')
 export class AuthController {
@@ -32,9 +35,17 @@ export class AuthController {
    */
   @Get('/')
   @UseGuards(AuthGuard())
-  async getUsers(@Req() req, @Query() query: { skip: number; take: number }): Promise<AuthResponsePayload> {
-    const users = await this.authService.getUsers(query);
-    return { response: { status: HttpStatus.FOUND, message: 'Users retrieved successfully' }, data: users };
+  async getUsers(
+    @Req() req,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ): Promise<Pagination<User>> {
+    limit = limit > 100 ? 100 : limit;
+    return this.authService.paginate({
+      page,
+      limit,
+    });
+    // return { response: { status: HttpStatus.FOUND, message: 'Users retrieved successfully' }, data: users };
   }
 
   /**

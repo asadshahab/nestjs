@@ -7,6 +7,7 @@ import { AuthSignInDto } from './dto/auth-singin.dto ';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './jwt-payload.interfase';
 import { HashPassword } from 'src/common/hash-password';
+import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class AuthService {
@@ -21,11 +22,26 @@ export class AuthService {
    * @returns all users
    */
   async getUsers(query): Promise<User[]> {
-    console.log(query);
-    return await this.userRepository.find({
-      skip: query.skip,
-      take: query.take,
-    });
+    const users = await this.userRepository.find({});
+
+    const options = {
+      users,
+      query,
+    };
+    return users;
+  }
+
+  /**
+   * @description Paginate all users
+   * @param options
+   * @returns all users
+   * @returns pagination
+   * @returns total users
+   */
+
+  async paginate(options: IPaginationOptions): Promise<Pagination<User>> {
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
+    return paginate<User>(queryBuilder, options);
   }
 
   /**

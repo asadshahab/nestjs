@@ -9,7 +9,7 @@ export const typeOrmConfig: DataSourceOptions = {
   database: process.env.DB, // name of the database
   entities: ['dist/src/**/**/*.entity.{js,ts}'], // path to entities
   synchronize: false, // synchronize database schema with entities
-  logging: true,
+  logging: false,
   migrationsRun: true,
   migrations: ['dist/src/migrations/*.{js,ts}'],
 };

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpStatus,
@@ -23,6 +24,7 @@ import { Product } from './product.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/role.guard';
 import { ProductResponsePayload } from './dto/product-response.dto';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 @Controller('products')
 export class ProductsController {
@@ -36,8 +38,12 @@ export class ProductsController {
   @Get('/')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @SetMetadata('roles', ['admin', 'superAdmin'])
-  getAllProducts(@Query(ValidationPipe) filterProductDto: FilterProductDto): Promise<Product[]> {
-    return this.productsService.getAllProducts(filterProductDto);
+  getAllProducts(
+    @Query(ValidationPipe) filterProductDto: FilterProductDto,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ): Promise<Pagination<Product>> {
+    return this.productsService.paginate({ page, limit });
   }
 
   /**

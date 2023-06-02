@@ -7,6 +7,7 @@ import { Order } from './entities/order.entity';
 import { User } from 'src/auth/auth.entity';
 import { ProductsService } from 'src/products/products.service';
 import { Product } from 'src/products/product.entity';
+import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class OrdersService {
@@ -84,6 +85,19 @@ export class OrdersService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  /**
+   * @description Paginate all Orders
+   * @param options
+   * @returns all Orders
+   * @returns pagination
+   * @returns total Orders
+   */
+
+  async paginate(options: IPaginationOptions): Promise<Pagination<Order>> {
+    const queryBuilder = this.orderRepository.createQueryBuilder('orders');
+    return paginate<Order>(queryBuilder, options);
   }
 
   /**

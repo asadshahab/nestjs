@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create.product.dto';
 import { UpdateProductDto } from './dto/update.product';
 import { FilterProductDto } from './dto/filter.product.dto';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class ProductsService {
@@ -49,6 +50,17 @@ export class ProductsService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  /**
+   * @description Paginate all products
+   * @param options
+   * @returns return all products with pagination
+   */
+
+  async paginate(options: IPaginationOptions): Promise<Pagination<Product>> {
+    const queryBuilder = this.productRepository.createQueryBuilder('orders');
+    return paginate<Product>(queryBuilder, options);
   }
 
   /**
