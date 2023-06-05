@@ -1,5 +1,4 @@
-import e from 'express';
-import { User } from 'src/auth/auth.entity';
+import { User } from 'src/user/user.entity';
 import { Product } from 'src/products/product.entity';
 import { BaseEntity, Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 

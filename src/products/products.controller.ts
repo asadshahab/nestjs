@@ -22,7 +22,7 @@ import { FilterProductDto } from './dto/filter.product.dto';
 import { ProductValidationPipe } from './pipes/product.validation.pipe';
 import { Product } from './product.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/auth/role.guard';
+import { RolesGuard } from 'src/user/auth/role.guard';
 import { ProductResponsePayload } from './dto/product-response.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 

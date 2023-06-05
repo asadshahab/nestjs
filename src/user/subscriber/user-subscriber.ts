@@ -1,7 +1,7 @@
 import { DataSource, EntitySubscriberInterface, EventSubscriber, InsertEvent } from 'typeorm';
-import { User } from './auth.entity';
+import { User } from '../user.entity';
 
-import { HashPassword } from '../common/hash-password';
+import { HashPassword } from '../../utils/common/hash-password';
 // import { HashPassword } from './hash-password';
 
 @EventSubscriber()

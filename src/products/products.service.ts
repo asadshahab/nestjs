@@ -83,10 +83,10 @@ export class ProductsService {
    * @param name
    * @returns The product with the specified name.
    */
-  async getProductByIdForOrder(name: string): Promise<Product> {
+  async getProductByIdForOrder(id: number): Promise<Product> {
     try {
       const data = await this.productRepository.findOne({
-        where: { name: name },
+        where: { id },
       });
       return data;
     } catch (error) {

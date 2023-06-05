@@ -1,12 +1,12 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
-import { User } from './auth.entity';
+import { User } from './user.entity';
 import { AuthSignupDto, accessTokenPayloadDTO } from './dto/auth-singup.dto';
 import { AuthSignInDto } from './dto/auth-singin.dto ';
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from './jwt-payload.interfase';
-import { HashPassword } from 'src/common/hash-password';
+import { JwtPayload } from './auth/jwt-payload.interfase';
+import { HashPassword } from 'src/utils/common/hash-password';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 @Injectable()

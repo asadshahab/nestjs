@@ -1,5 +1,5 @@
-import { ResponsePayload } from 'src/common/dto/index.dto';
-import { User } from '../auth.entity';
+import { ResponsePayload } from 'src/utils/common/dto/index.dto';
+import { User } from '../user.entity';
 
 export class AuthSingInResponsePayload extends ResponsePayload {
   data: User;

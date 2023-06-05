@@ -15,13 +15,13 @@ import {
   DefaultValuePipe,
   ParseIntPipe,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { User } from './auth.entity';
-import { AuthSignupDto, accessTokenPayloadDTO } from './dto/auth-singup.dto';
-import { AuthSignInDto } from './dto/auth-singin.dto ';
+import { AuthService } from '../user.service';
+import { User } from '../user.entity';
+import { AuthSignupDto, accessTokenPayloadDTO } from '../dto/auth-singup.dto';
+import { AuthSignInDto } from '../dto/auth-singin.dto ';
 import { AuthGuard } from '@nestjs/passport';
-import { AuthResponsePayload } from './dto/auth-response.dto';
-import { AuthSingInResponsePayload } from './dto/auth-singin-response.dto';
+import { AuthResponsePayload } from '../dto/auth-response.dto';
+import { AuthSingInResponsePayload } from '../dto/auth-singin-response.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
 @Controller('auth')
