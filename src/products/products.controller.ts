@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  DefaultValuePipe,
   Delete,
   Get,
   HttpStatus,
@@ -18,13 +17,13 @@ import {
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create.product.dto';
 import { UpdateProductDto } from './dto/update.product';
-import { FilterProductDto } from './dto/filter.product.dto';
-import { ProductValidationPipe } from './pipes/product.validation.pipe';
 import { Product } from './product.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/user/auth/role.guard';
 import { ProductResponsePayload } from './dto/product-response.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
+import { MessageConstant } from './message-constants';
+import { User, UserRole } from 'src/user/user.entity';
 
 @Controller('products')
 export class ProductsController {
@@ -33,32 +32,30 @@ export class ProductsController {
   /**
    *
    * @param filterProductDto
-   * @returns
+   * @returns return a list of products
    */
-  @Get('/')
+  @Get('/getAll')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @SetMetadata('roles', ['admin', 'superAdmin'])
-  getAllProducts(
-    @Query(ValidationPipe) filterProductDto: FilterProductDto,
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
-  ): Promise<Pagination<Product>> {
+  @SetMetadata('roles', [UserRole.SUPERADMIN, UserRole.ADMIN])
+  getAllProducts(@Query('page', ParseIntPipe) page: number, @Query('limit', ParseIntPipe) limit: number): Promise<Pagination<Product>> {
     return this.productsService.paginate({ page, limit });
   }
 
   /**
    *
    * @param id
-   * @returns
+   * @returns return a single product
    */
-  @Get('/:id')
+  @Get('/getById/:id')
   async getProductById(@Param('id', ParseIntPipe) id: number): Promise<ProductResponsePayload> {
     const product = await this.productsService.getProductById(id);
-    const response = {
-      status: HttpStatus.OK,
-      message: 'Product retrieved successfully',
+    return {
+      response: {
+        status: HttpStatus.OK,
+        message: MessageConstant.productRetrieved,
+      },
+      data: product,
     };
-    return { response, data: product };
   }
 
   /**
@@ -66,17 +63,19 @@ export class ProductsController {
    * @param createProductDto
    * @returns
    */
-  @Post('/')
+  @Post('/addProduct')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @SetMetadata('roles', ['superAdmin'])
+  @SetMetadata('roles', [UserRole.SUPERADMIN, UserRole.ADMIN])
   @UsePipes(ValidationPipe)
   async createProduct(@Body() createProductDto: CreateProductDto): Promise<ProductResponsePayload> {
     const product = await this.productsService.createProduct(createProductDto);
-    const response = {
-      status: HttpStatus.CREATED,
-      message: 'Product created successfully',
+    return {
+      response: {
+        status: HttpStatus.CREATED,
+        message: MessageConstant.productCreated,
+      },
+      data: product,
     };
-    return { response, data: product };
   }
 
   /**
@@ -85,19 +84,18 @@ export class ProductsController {
    * @Body updateProductDto
    * @returns
    */
-  @Put('/:id')
+  @Put('/update/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @SetMetadata('roles', ['superAdmin', 'admin'])
-  async updateProductById(
-    @Param('id', ParseIntPipe) id: number,
-    @Body(ProductValidationPipe) updateProductDto: UpdateProductDto,
-  ): Promise<ProductResponsePayload> {
+  @SetMetadata('roles', [UserRole.SUPERADMIN, UserRole.ADMIN])
+  async updateProductById(@Param('id', ParseIntPipe) id: number, @Body() updateProductDto: UpdateProductDto): Promise<ProductResponsePayload> {
     const updatedProduct = await this.productsService.updateProductById(id, updateProductDto);
-    const response = {
-      status: HttpStatus.OK,
-      message: 'Product updated successfully',
+    return {
+      response: {
+        status: HttpStatus.OK,
+        message: MessageConstant.productUpdated,
+      },
+      data: updatedProduct,
     };
-    return { response, data: updatedProduct };
   }
 
   /**
@@ -105,15 +103,17 @@ export class ProductsController {
    * @param id
    * @returns
    */
-  @Delete('/:id')
+  @Delete('/delete/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @SetMetadata('roles', ['superAdmin'])
+  @SetMetadata('roles', [UserRole.SUPERADMIN, UserRole.ADMIN])
   async deleteProductById(@Param('id', ParseIntPipe) id: number): Promise<ProductResponsePayload> {
     const deletedProduct = await this.productsService.deleteProductById(id);
-    const response = {
-      status: HttpStatus.OK,
-      message: 'Product deleted successfully',
+    return {
+      response: {
+        status: HttpStatus.OK,
+        message: MessageConstant.productDeleted,
+      },
+      data: deletedProduct,
     };
-    return { response, data: deletedProduct };
   }
 }

@@ -4,7 +4,7 @@ import 'dotenv/config';
 
 const typeOrmConfig: DataSourceOptions = {
   type: 'postgres',
-  host: process.env.DB_HOST || 'localhost',
+  // host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 5432,
   username: process.env.USER_NAME, // your username
   password: process.env.PASSWORD, // your password

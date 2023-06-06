@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { AuthSignupDto, accessTokenPayloadDTO } from './dto/auth-singup.dto';
 import { AuthSignInDto } from './dto/auth-singin.dto ';
@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './auth/jwt-payload.interfase';
 import { HashPassword } from 'src/utils/common/hash-password';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { MessageConstant } from './message-constants';
 
 @Injectable()
 export class AuthService {
@@ -21,13 +22,8 @@ export class AuthService {
    * @description get all users
    * @returns all users
    */
-  async getUsers(query): Promise<User[]> {
+  async getUsers(): Promise<User[]> {
     const users = await this.userRepository.find({});
-
-    const options = {
-      users,
-      query,
-    };
     return users;
   }
 
@@ -49,9 +45,12 @@ export class AuthService {
    * @param email
    * @returns one user
    */
-  async getUser(email: string): Promise<User> {
+  async getUser(id: number): Promise<User> {
     try {
-      const user = await this.userRepository.findOne({ where: { email } });
+      const user = await this.userRepository.findOne({ where: { id } });
+      if (!user) {
+        throw new NotFoundException(MessageConstant.userNotFound);
+      }
       return user;
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -65,16 +64,15 @@ export class AuthService {
    */
   async signupUser(authSignupDto: AuthSignupDto): Promise<User> {
     try {
-      const { email, password } = authSignupDto;
-
-      const user = await this.getUser(email);
-
+      const { email } = authSignupDto;
+      const user = await this.userRepository.findOne({ where: { email } });
       if (user) {
         throw new ConflictException('User already exists');
       }
-      return await this.userRepository.save(authSignupDto);
+      const userData = this.userRepository.create(authSignupDto);
+
+      return await userData.save();
     } catch (error) {
-      // server error  exception
       throw new InternalServerErrorException(error);
     }
   }
@@ -89,7 +87,7 @@ export class AuthService {
     try {
       const { email, password } = authSignInDto;
 
-      const userData = await this.getUser(email);
+      const userData = await this.userRepository.findOne({ where: { email } });
       if (!userData) {
         throw new NotFoundException('User not found');
       }

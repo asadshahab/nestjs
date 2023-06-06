@@ -1,8 +1,17 @@
 import { DataSourceOptions } from 'typeorm';
 
+// import { MyService } from './configServices';
+import { config } from 'dotenv';
+import { ConfigService } from '@nestjs/config';
+
+// const myService = new MyService();
+
+// myService.configData();
+
 export const typeOrmConfig: DataSourceOptions = {
   type: 'postgres',
-  host: process.env.DB_HOST || 'localhost',
+
+  // host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 5432,
   username: process.env.USER_NAME, // your username
   password: process.env.PASSWORD, // your password
@@ -12,4 +21,8 @@ export const typeOrmConfig: DataSourceOptions = {
   logging: false,
   migrationsRun: true,
   migrations: ['dist/src/migrations/*.{js,ts}'],
+};
+
+export const dataBase = {
+  typeOrmConfig,
 };

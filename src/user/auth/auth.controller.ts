@@ -10,7 +10,6 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   HttpStatus,
-  Param,
   Query,
   DefaultValuePipe,
   ParseIntPipe,
@@ -20,12 +19,17 @@ import { User } from '../user.entity';
 import { AuthSignupDto, accessTokenPayloadDTO } from '../dto/auth-singup.dto';
 import { AuthSignInDto } from '../dto/auth-singin.dto ';
 import { AuthGuard } from '@nestjs/passport';
-import { AuthResponsePayload } from '../dto/auth-response.dto';
 import { AuthSingInResponsePayload } from '../dto/auth-singin-response.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
+import { MessageConstant } from '../message-constants';
+
+import { ConfigService } from '@nestjs/config';
+import { dataBase } from 'src/config/typeorm.config';
+import { PaginationResponse } from '../../utils/common/dto/pagination-response';
 
 @Controller('auth')
 export class AuthController {
+  // inject configService
   constructor(private authService: AuthService) {}
 
   /**
@@ -33,19 +37,20 @@ export class AuthController {
    * @param req
    * @returns return all users
    */
-  @Get('/')
+  @Get('/getUsers')
   @UseGuards(AuthGuard())
   async getUsers(
     @Req() req,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
-  ): Promise<Pagination<User>> {
+  ): Promise<PaginationResponse> {
     limit = limit > 100 ? 100 : limit;
-    return this.authService.paginate({
+
+    const usersData = await this.authService.paginate({
       page,
       limit,
     });
-    // return { response: { status: HttpStatus.FOUND, message: 'Users retrieved successfully' }, data: users };
+    return { response: { status: HttpStatus.OK, message: MessageConstant.userRetrieved }, data: usersData };
   }
 
   /**
@@ -57,7 +62,7 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   async signupUser(@Body() authSignupDto: AuthSignupDto): Promise<AuthSingInResponsePayload> {
     const user = await this.authService.signupUser(authSignupDto);
-    return { response: { status: HttpStatus.CREATED, message: 'user created successfully' }, data: user };
+    return { response: { status: HttpStatus.CREATED, message: MessageConstant.userCreated }, data: user };
   }
 
   /**
@@ -70,6 +75,6 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   async signInUser(@Body() authSignInDto: AuthSignInDto): Promise<AuthSingInResponsePayload> {
     const { user, accessToken } = await this.authService.signInUser(authSignInDto);
-    return { response: { status: HttpStatus.OK, message: 'user logged in successfully' }, data: user, accessToken };
+    return { response: { status: HttpStatus.OK, message: MessageConstant.login }, data: user, accessToken };
   }
 }

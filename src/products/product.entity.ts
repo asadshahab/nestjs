@@ -1,8 +1,8 @@
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Order } from 'src/orders/entities/order.entity';
+import { IsEnum } from 'class-validator';
 
 export enum ProductStatus {
-  // define the values of the enum
   ACTIVE = 'active',
   INACTIVE = 'inactive',
 }
@@ -18,6 +18,7 @@ export class Product extends BaseEntity {
   description: string;
   @Column()
   price: number;
+
   @Column()
   status: ProductStatus;
 

@@ -1,6 +1,12 @@
 import { User } from 'src/user/user.entity';
 import { Product } from 'src/products/product.entity';
 import { BaseEntity, Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { IsEnum } from 'class-validator';
+
+export enum OrderStatus {
+  PENDING = 'pending',
+  COMPLETED = 'completed',
+}
 
 @Entity()
 export class Order extends BaseEntity {
@@ -17,7 +23,7 @@ export class Order extends BaseEntity {
   quantity: number;
 
   @Column()
-  status: string;
+  status: OrderStatus;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: string;
