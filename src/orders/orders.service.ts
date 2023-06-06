@@ -1,12 +1,12 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, Req } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order } from './entities/order.entity';
-import { User } from 'src/user/user.entity';
-import { ProductsService } from 'src/products/products.service';
-import { Product } from 'src/products/product.entity';
+import { User } from '../user/user.entity';
+import { ProductsService } from '../products/products.service';
+import { Product } from '../products/product.entity';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 @Injectable()

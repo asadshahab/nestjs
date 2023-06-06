@@ -1,5 +1,4 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { Exclude } from 'class-transformer';
 import { User, UserRole } from '../user.entity';
 
 export class AuthSignupDto {

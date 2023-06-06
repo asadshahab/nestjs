@@ -1,7 +1,6 @@
-import { User } from 'src/user/user.entity';
-import { Product } from 'src/products/product.entity';
+import { User } from '../../user/user.entity';
+import { Product } from '../../products/product.entity';
 import { BaseEntity, Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { IsEnum } from 'class-validator';
 
 export enum OrderStatus {
   PENDING = 'pending',

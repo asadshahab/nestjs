@@ -6,7 +6,7 @@ import { AuthSignupDto, accessTokenPayloadDTO } from './dto/auth-singup.dto';
 import { AuthSignInDto } from './dto/auth-singin.dto ';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './auth/jwt-payload.interfase';
-import { HashPassword } from 'src/utils/common/hash-password';
+import { HashPassword } from '../utils/common/hash-password';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { MessageConstant } from './message-constants';
 

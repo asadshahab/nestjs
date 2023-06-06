@@ -1,6 +1,5 @@
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Order } from 'src/orders/entities/order.entity';
-import { IsEnum } from 'class-validator';
+import { Order } from '../orders/entities/order.entity';
 
 export enum ProductStatus {
   ACTIVE = 'active',

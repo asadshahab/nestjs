@@ -1,6 +1,6 @@
 import { IsEnum, IsNotEmpty } from 'class-validator';
-import { User } from 'src/user/user.entity';
-import { Product } from 'src/products/product.entity';
+import { User } from '../../user/user.entity';
+import { Product } from '../../products/product.entity';
 import { OrderStatus } from '../entities/order.entity';
 
 export class CreateOrderDto {

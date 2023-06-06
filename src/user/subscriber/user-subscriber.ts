@@ -1,8 +1,6 @@
 import { DataSource, EntitySubscriberInterface, EventSubscriber, InsertEvent } from 'typeorm';
 import { User } from '../user.entity';
-
 import { HashPassword } from '../../utils/common/hash-password';
-// import { HashPassword } from './hash-password';
 
 @EventSubscriber()
 export class UserSubscriber implements EntitySubscriberInterface<User> {
@@ -15,8 +13,6 @@ export class UserSubscriber implements EntitySubscriberInterface<User> {
   }
 
   async beforeInsert(event: InsertEvent<User>) {
-    // hash passwords
-    const hashedPassword = await HashPassword.hash(event.entity.password);
-    event.entity.password = hashedPassword;
+    event.entity.password = await HashPassword.hash(event.entity.password);
   }
 }

@@ -19,11 +19,11 @@ import { CreateProductDto } from './dto/create.product.dto';
 import { UpdateProductDto } from './dto/update.product';
 import { Product } from './product.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/user/auth/role.guard';
+import { RolesGuard } from '../user/auth/role.guard';
 import { ProductResponsePayload } from './dto/product-response.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { MessageConstant } from './message-constants';
-import { User, UserRole } from 'src/user/user.entity';
+import { User, UserRole } from '../user/user.entity';
 
 @Controller('products')
 export class ProductsController {

@@ -9,4 +9,3 @@ export class HashPassword {
     return bcrypt.compare(password, hash);
   }
 }
-// Compare this snippet from src/auth/auth.service.ts

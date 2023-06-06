@@ -15,21 +15,15 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { AuthService } from '../user.service';
-import { User } from '../user.entity';
-import { AuthSignupDto, accessTokenPayloadDTO } from '../dto/auth-singup.dto';
+import { AuthSignupDto } from '../dto/auth-singup.dto';
 import { AuthSignInDto } from '../dto/auth-singin.dto ';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthSingInResponsePayload } from '../dto/auth-singin-response.dto';
-import { Pagination } from 'nestjs-typeorm-paginate';
 import { MessageConstant } from '../message-constants';
-
-import { ConfigService } from '@nestjs/config';
-import { dataBase } from 'src/config/typeorm.config';
 import { PaginationResponse } from '../../utils/common/dto/pagination-response';
 
 @Controller('auth')
 export class AuthController {
-  // inject configService
   constructor(private authService: AuthService) {}
 
   /**

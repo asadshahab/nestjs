@@ -18,12 +18,10 @@ import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/user/auth/role.guard';
-import { Order } from './entities/order.entity';
+import { RolesGuard } from '../user/auth/role.guard';
 import { OrderResponsePayload } from './dto/oreder-response.dto';
-import { Pagination } from 'nestjs-typeorm-paginate';
 import { MessageConstant } from './message-constants';
-import { PaginationResponse } from 'src/utils/common/dto/pagination-response';
+import { PaginationResponse } from '../utils/common/dto/pagination-response';
 
 @Controller('orders')
 export class OrdersController {
