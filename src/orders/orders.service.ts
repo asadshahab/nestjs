@@ -25,7 +25,7 @@ export class OrdersService {
       const products: Product[] = productList.map((product) => product.product);
       await Promise.all(
         products.map(async (element) => {
-          const productData = await this.productService.getProductByIdForOrder(element.id);
+          const productData = await this.productService.getProductById(element.id);
           if (!productData) {
             throw new NotFoundException('Product not found');
           }
@@ -45,31 +45,6 @@ export class OrdersService {
   }
 
   /**
-   * @description get all orders
-   * @param user
-   * @returns return all orders
-   */
-  async findAll(user: User) {
-    try {
-      const data = await this.orderRepository.find({
-        relations: ['user', 'product'],
-        select: ['id', 'status', 'quantity'],
-        where: { user: { id: user.id } },
-      });
-
-      // no data found exception
-
-      if (data.length === 0) {
-        throw new NotFoundException('No order found');
-      }
-
-      return data;
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
-  }
-
-  /**
    * @description Paginate all Orders
    * @param options
    * @returns all Orders
@@ -78,8 +53,7 @@ export class OrdersService {
    */
 
   async paginate(options: IPaginationOptions): Promise<Pagination<Order>> {
-    const queryBuilder = await this.orderRepository.createQueryBuilder('orders');
-    return paginate<Order>(queryBuilder, options);
+    return paginate<Order>(this.orderRepository, options);
   }
 
   /**
@@ -94,12 +68,6 @@ export class OrdersService {
         relations: ['user', 'product'],
         where: { id, user: { id: user.id } },
       });
-
-      // no data found exception
-      if (!orderData) {
-        throw new NotFoundException('Order not found');
-      }
-
       return orderData;
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -116,17 +84,14 @@ export class OrdersService {
   async updateOrder(id: number, updateOrderDto: UpdateOrderDto, user: User) {
     try {
       const { status, productList } = updateOrderDto;
-      // check the order exists or not
-      const orderData = await this.orderRepository.findOne({
-        where: { id, user: { id: user.id } },
-      });
+      const orderData = await this.findById(id, user);
       if (!orderData) {
         throw new NotFoundException('Order not found');
       }
       await Promise.all(
         productList.map(async (product) => {
           const productId = product.product.id;
-          const productData = await this.productService.getProductByIdForOrder(productId);
+          const productData = await this.productService.getProductById(productId);
           if (!productData) {
             throw new NotFoundException('Product not found');
           }
@@ -136,7 +101,6 @@ export class OrdersService {
         status: status,
         quantity: productList.length,
       });
-
       return updateData;
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -151,15 +115,11 @@ export class OrdersService {
    */
   async deleteOrder(id: number, user: User) {
     try {
-      // check the order exists or not
-      const orderData = await this.orderRepository.findOne({
-        where: { id, user: { id: user.id } },
-      });
+      const orderData = await this.findById(id, user);
       if (!orderData) {
         throw new NotFoundException('Order not found');
       }
       await this.orderRepository.delete(id);
-      // delete the order
       return orderData;
     } catch (error) {
       throw new InternalServerErrorException(error);

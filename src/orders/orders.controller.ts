@@ -22,8 +22,9 @@ import { RolesGuard } from '../user/auth/role.guard';
 import { OrderResponsePayload } from './dto/oreder-response.dto';
 import { MessageConstant } from '../utils/constants/order-message-constants';
 import { PaginationResponse } from '../utils/common/dto/pagination-response';
+import { Order } from './entities/order.entity';
 
-@Controller('index')
+@Controller('order')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
@@ -53,7 +54,7 @@ export class OrdersController {
    */
   @Get('/view')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  async findAll(@Query('page', ParseIntPipe) page: number, @Query('limit', ParseIntPipe) limit: number): Promise<PaginationResponse> {
+  async findAll(@Query('page', ParseIntPipe) page: number, @Query('limit', ParseIntPipe) limit: number): Promise<PaginationResponse<Order>> {
     const orderData = await this.ordersService.paginate({
       page,
       limit,

@@ -2,6 +2,6 @@ import { ResponsePayload } from '../../utils/common/dto/index.dto';
 import { User } from '../user.entity';
 
 export class AuthResponsePayload extends ResponsePayload {
-  data: User[];
+  user: User[];
   accessToken?: string;
 }

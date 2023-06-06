@@ -19,15 +19,6 @@ export class AuthService {
   ) {}
 
   /**
-   * @description get all users
-   * @returns all users
-   */
-  async getUsers(): Promise<User[]> {
-    const users = await this.userRepository.find({});
-    return users;
-  }
-
-  /**
    * @description Paginate all users
    * @param options
    * @returns all users
@@ -36,8 +27,7 @@ export class AuthService {
    */
 
   async paginate(options: IPaginationOptions): Promise<Pagination<User>> {
-    const queryBuilder = this.userRepository.createQueryBuilder('user');
-    return paginate<User>(queryBuilder, options);
+    return paginate<User>(this.userRepository, options);
   }
 
   /**
@@ -48,9 +38,6 @@ export class AuthService {
   async getUser(id: number): Promise<User> {
     try {
       const user = await this.userRepository.findOne({ where: { id } });
-      if (!user) {
-        throw new NotFoundException(MessageConstant.userNotFound);
-      }
       return user;
     } catch (error) {
       throw new InternalServerErrorException(error);

@@ -49,8 +49,7 @@ export class ProductsService {
    */
 
   async paginate(options: IPaginationOptions): Promise<Pagination<Product>> {
-    const queryBuilder = this.productRepository.createQueryBuilder('orders');
-    return paginate<Product>(queryBuilder, options);
+    return paginate<Product>(this.productRepository, options);
   }
 
   /**
@@ -61,31 +60,11 @@ export class ProductsService {
   async getProductById(id: number): Promise<Product> {
     try {
       const data = await this.productRepository.findOne({ where: { id } });
-      if (!data) {
-        throw new NotFoundException(MessageConstant.productNotFound);
-      }
       return data;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
-
-  /**
-   * @description find product by name
-   * @param id
-   * @returns The product with the specified name.
-   */
-  async getProductByIdForOrder(id: number): Promise<Product> {
-    try {
-      const data = await this.productRepository.findOne({
-        where: { id },
-      });
-      return data;
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
-  }
-
   /**
    * @description add a product
    * @param createProductDto
@@ -112,12 +91,10 @@ export class ProductsService {
    */
   async updateProductById(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
     try {
-      const product = await this.productRepository.findOne({ where: { id } });
+      const product = await this.getProductById(id);
       if (!product) {
         throw new NotFoundException(MessageConstant.productNotFound);
       }
-
-      // update the changes fileds only
       const updatedProduct =
         updateProductDto.name && updateProductDto.status
           ? await this.productRepository.save({ ...product, ...updateProductDto })
@@ -136,11 +113,10 @@ export class ProductsService {
    */
   async deleteProductById(id: number): Promise<Product> {
     try {
-      const data = await this.productRepository.findOne({ where: { id } });
+      const data = await this.getProductById(id);
       if (!data) {
         throw new NotFoundException(MessageConstant.productNotFound);
       }
-
       const deletedData = await this.productRepository.delete(id);
       if (deletedData.affected == 0) {
         throw new NotFoundException(MessageConstant.productNotDeleted);

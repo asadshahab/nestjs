@@ -21,8 +21,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthSingInResponsePayload } from '../dto/auth-singin-response.dto';
 import { MessageConstant } from '../../utils/constants/user-message-constants';
 import { PaginationResponse } from '../../utils/common/dto/pagination-response';
+import { User } from '../user.entity';
 
-@Controller('index')
+@Controller('user')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
@@ -37,9 +38,7 @@ export class AuthController {
     @Req() req,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
-  ): Promise<PaginationResponse> {
-    limit = limit > 100 ? 100 : limit;
-
+  ): Promise<PaginationResponse<User>> {
     const usersData = await this.authService.paginate({
       page,
       limit,
@@ -56,7 +55,7 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   async signupUser(@Body() authSignupDto: AuthSignupDto): Promise<AuthSingInResponsePayload> {
     const user = await this.authService.signupUser(authSignupDto);
-    return { response: { status: HttpStatus.CREATED, message: MessageConstant.userCreated }, data: user };
+    return { response: { status: HttpStatus.CREATED, message: MessageConstant.userCreated }, user };
   }
 
   /**
@@ -69,6 +68,6 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   async signInUser(@Body() authSignInDto: AuthSignInDto): Promise<AuthSingInResponsePayload> {
     const { user, accessToken } = await this.authService.signInUser(authSignInDto);
-    return { response: { status: HttpStatus.OK, message: MessageConstant.login }, data: user, accessToken };
+    return { response: { status: HttpStatus.OK, message: MessageConstant.login }, user, accessToken };
   }
 }
