@@ -22,10 +22,10 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../user/auth/role.guard';
 import { ProductResponsePayload } from './dto/product-response.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { MessageConstant } from './message-constants';
+import { MessageConstant } from '../utils/constants/product-message-constants';
 import { User, UserRole } from '../user/user.entity';
 
-@Controller('products')
+@Controller('index')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
@@ -34,7 +34,7 @@ export class ProductsController {
    * @param filterProductDto
    * @returns return a list of products
    */
-  @Get('/getAll')
+  @Get('/view')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @SetMetadata('roles', [UserRole.SUPERADMIN, UserRole.ADMIN])
   getAllProducts(@Query('page', ParseIntPipe) page: number, @Query('limit', ParseIntPipe) limit: number): Promise<Pagination<Product>> {
@@ -46,7 +46,7 @@ export class ProductsController {
    * @param id
    * @returns return a single product
    */
-  @Get('/getById/:id')
+  @Get('/view/:id')
   async getProductById(@Param('id', ParseIntPipe) id: number): Promise<ProductResponsePayload> {
     const product = await this.productsService.getProductById(id);
     return {
@@ -63,7 +63,7 @@ export class ProductsController {
    * @param createProductDto
    * @returns
    */
-  @Post('/addProduct')
+  @Post('/create')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @SetMetadata('roles', [UserRole.SUPERADMIN, UserRole.ADMIN])
   @UsePipes(ValidationPipe)
@@ -84,7 +84,7 @@ export class ProductsController {
    * @Body updateProductDto
    * @returns
    */
-  @Put('/update/:id')
+  @Put('/edit/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @SetMetadata('roles', [UserRole.SUPERADMIN, UserRole.ADMIN])
   async updateProductById(@Param('id', ParseIntPipe) id: number, @Body() updateProductDto: UpdateProductDto): Promise<ProductResponsePayload> {

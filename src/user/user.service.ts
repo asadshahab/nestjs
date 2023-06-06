@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './auth/jwt-payload.interfase';
 import { HashPassword } from '../utils/common/hash-password';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
-import { MessageConstant } from './message-constants';
+import { MessageConstant } from '../utils/constants/user-message-constants';
 
 @Injectable()
 export class AuthService {

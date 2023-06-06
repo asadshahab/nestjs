@@ -19,10 +19,10 @@ import { AuthSignupDto } from '../dto/auth-singup.dto';
 import { AuthSignInDto } from '../dto/auth-singin.dto ';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthSingInResponsePayload } from '../dto/auth-singin-response.dto';
-import { MessageConstant } from '../message-constants';
+import { MessageConstant } from '../../utils/constants/user-message-constants';
 import { PaginationResponse } from '../../utils/common/dto/pagination-response';
 
-@Controller('auth')
+@Controller('index')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
@@ -31,7 +31,7 @@ export class AuthController {
    * @param req
    * @returns return all users
    */
-  @Get('/getUsers')
+  @Get('/view')
   @UseGuards(AuthGuard())
   async getUsers(
     @Req() req,

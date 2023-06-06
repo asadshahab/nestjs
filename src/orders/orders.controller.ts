@@ -20,10 +20,10 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../user/auth/role.guard';
 import { OrderResponsePayload } from './dto/oreder-response.dto';
-import { MessageConstant } from './message-constants';
+import { MessageConstant } from '../utils/constants/order-message-constants';
 import { PaginationResponse } from '../utils/common/dto/pagination-response';
 
-@Controller('orders')
+@Controller('index')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
@@ -51,7 +51,7 @@ export class OrdersController {
    * @Auth bearer token
    * @returns
    */
-  @Get('/getAll')
+  @Get('/view')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async findAll(@Query('page', ParseIntPipe) page: number, @Query('limit', ParseIntPipe) limit: number): Promise<PaginationResponse> {
     const orderData = await this.ordersService.paginate({
@@ -71,7 +71,7 @@ export class OrdersController {
    * @returns return the order
    */
 
-  @Get('/findById/:id')
+  @Get('/view/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async findById(@Param('id') id: number, @Req() reqUser): Promise<OrderResponsePayload> {
     const user = reqUser.user;
@@ -86,7 +86,7 @@ export class OrdersController {
    * @Auth bearer token
    * @returns return the order
    */
-  @Put('/update/:id')
+  @Put('/edit/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async orderUpdate(@Param('id') id: number, @Body() updateOrderDto: UpdateOrderDto, @Req() reqUser) {
     const { user } = reqUser;
@@ -100,7 +100,7 @@ export class OrdersController {
    * @Auth bearer token
    * @returns return the order
    */
-  @Delete('delete/:id')
+  @Delete('/delete/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async orderDelete(@Param('id') id: number, @Req() reqUser): Promise<OrderResponsePayload> {
     const { user } = reqUser;

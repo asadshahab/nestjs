@@ -7,7 +7,7 @@ import { CreateProductDto } from './dto/create.product.dto';
 import { UpdateProductDto } from './dto/update.product';
 import { FilterProductDto } from './dto/filter.product.dto';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import { MessageConstant } from './message-constants';
+import { MessageConstant } from '../utils/constants/product-message-constants';
 
 @Injectable()
 export class ProductsService {
