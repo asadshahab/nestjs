@@ -8,6 +8,7 @@ import { User } from '../user/user.entity';
 import { ProductsService } from '../products/products.service';
 import { Product } from '../products/product.entity';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { OrderConstant } from '../utils/constants/message-constants';
 
 @Injectable()
 export class OrdersService {
@@ -27,7 +28,7 @@ export class OrdersService {
         products.map(async (element) => {
           const productData = await this.productService.getProductById(element.id);
           if (!productData) {
-            throw new NotFoundException('Product not found');
+            throw new NotFoundException(OrderConstant.productNotFound);
           }
         }),
       );
@@ -86,14 +87,14 @@ export class OrdersService {
       const { status, productList } = updateOrderDto;
       const orderData = await this.findById(id, user);
       if (!orderData) {
-        throw new NotFoundException('Order not found');
+        throw new NotFoundException(OrderConstant.orderNotFound);
       }
       await Promise.all(
         productList.map(async (product) => {
           const productId = product.product.id;
           const productData = await this.productService.getProductById(productId);
           if (!productData) {
-            throw new NotFoundException('Product not found');
+            throw new NotFoundException(OrderConstant.productNotFound);
           }
         }),
       );
@@ -117,7 +118,7 @@ export class OrdersService {
     try {
       const orderData = await this.findById(id, user);
       if (!orderData) {
-        throw new NotFoundException('Order not found');
+        throw new NotFoundException(OrderConstant.orderNotFound);
       }
       await this.orderRepository.delete(id);
       return orderData;

@@ -19,7 +19,7 @@ import { AuthSignupDto } from '../dto/auth-singup.dto';
 import { AuthSignInDto } from '../dto/auth-singin.dto ';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthSingInResponsePayload } from '../dto/auth-singin-response.dto';
-import { MessageConstant } from '../../utils/constants/user-message-constants';
+import { UserConstant } from '../../utils/constants/message-constants';
 // import { PaginationResponse } from '../../utils/common/dto/pagination-response';
 import { User } from '../user.entity';
 
@@ -55,7 +55,7 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   async signupUser(@Body() authSignupDto: AuthSignupDto): Promise<AuthSingInResponsePayload> {
     const user = await this.authService.signupUser(authSignupDto);
-    return { response: { status: HttpStatus.CREATED, message: MessageConstant.userCreated }, user };
+    return { response: { status: HttpStatus.CREATED, message: UserConstant.userCreated }, user };
   }
 
   /**
@@ -68,6 +68,6 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   async signInUser(@Body() authSignInDto: AuthSignInDto): Promise<AuthSingInResponsePayload> {
     const { user, accessToken } = await this.authService.signInUser(authSignInDto);
-    return { response: { status: HttpStatus.OK, message: MessageConstant.login }, user, accessToken };
+    return { response: { status: HttpStatus.OK, message: UserConstant.login }, user, accessToken };
   }
 }

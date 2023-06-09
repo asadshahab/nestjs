@@ -7,7 +7,7 @@ import { CreateProductDto } from './dto/create.product.dto';
 import { UpdateProductDto } from './dto/update.product';
 import { FilterProductDto } from './dto/filter.product.dto';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import { MessageConstant } from '../utils/constants/product-message-constants';
+import { ProductConstant } from '../utils/constants/message-constants';
 
 @Injectable()
 export class ProductsService {
@@ -34,7 +34,7 @@ export class ProductsService {
       }
       const data = await query.getMany();
       if (data.length === 0) {
-        throw new NotFoundException(MessageConstant.productNotFound);
+        throw new NotFoundException(ProductConstant.productNotFound);
       }
       return data;
     } catch (error) {
@@ -74,11 +74,11 @@ export class ProductsService {
     const { name } = createProductDto;
     const product = await this.productRepository.findOne({ where: { name } });
     if (product) {
-      throw new BadRequestException(MessageConstant.productExist);
+      throw new BadRequestException(ProductConstant.productExist);
     }
     const data = await this.productRepository.save(createProductDto);
     if (!data) {
-      throw new BadRequestException(MessageConstant.productNotCreated);
+      throw new BadRequestException(ProductConstant.productNotCreated);
     }
     return data;
   }
@@ -93,12 +93,9 @@ export class ProductsService {
     try {
       const product = await this.getProductById(id);
       if (!product) {
-        throw new NotFoundException(MessageConstant.productNotFound);
+        throw new NotFoundException(ProductConstant.productNotFound);
       }
-      const updatedProduct =
-        updateProductDto.name && updateProductDto.status
-          ? await this.productRepository.save({ ...product, ...updateProductDto })
-          : await this.productRepository.save({ ...product, ...updateProductDto });
+      const updatedProduct = await this.productRepository.save({ ...product, ...updateProductDto });
 
       return updatedProduct;
     } catch (error) {
@@ -115,11 +112,11 @@ export class ProductsService {
     try {
       const data = await this.getProductById(id);
       if (!data) {
-        throw new NotFoundException(MessageConstant.productNotFound);
+        throw new NotFoundException(ProductConstant.productNotFound);
       }
       const deletedData = await this.productRepository.delete(id);
       if (deletedData.affected == 0) {
-        throw new NotFoundException(MessageConstant.productNotDeleted);
+        throw new NotFoundException(ProductConstant.productNotDeleted);
       }
       return data;
     } catch (error) {

@@ -9,7 +9,7 @@ import { JwtStrategy } from './auth/jwt.strategy';
 import * as dotenv from 'dotenv';
 import { UserSubscriber } from './subscriber/user-subscriber';
 import { ConfigService } from '@nestjs/config';
-import { AuthResolver } from './auth/user.resolver';
+import { AuthResolver } from './auth/auth.resolver';
 dotenv.config();
 
 @Module({

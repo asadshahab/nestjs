@@ -2,15 +2,11 @@ import { User } from '../../user/user.entity';
 import { Product } from '../../products/product.entity';
 import { BaseEntity, Column, Entity, In, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Field, ID, InputType, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { AuthSignupDto } from 'src/user/dto/auth-singup.dto';
 
 export enum OrderStatus {
   PENDING = 'pending',
   COMPLETED = 'completed',
 }
-
-// register  enums
-
 registerEnumType(OrderStatus, {
   name: 'OrderStatus',
 });

@@ -3,6 +3,7 @@ import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/com
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from '.././user.service';
+import { UserConstant } from '../../utils/constants/message-constants';
 
 @Injectable()
 export class GqlAuthGuard extends AuthGuard('jwt') {
@@ -18,35 +19,16 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
     }
     const token = this.extractToken(ctx.req.headers.authorization);
     if (!token) {
-      throw new UnauthorizedException('Invalid token');
+      throw new UnauthorizedException(UserConstant.invalidToken);
     }
     const user = await this.userService.validateToken(token);
     if (!user) {
-      throw new AuthenticationError('Invalid User');
+      throw new AuthenticationError(UserConstant.userNotFound);
     }
-
-    console.log('---------user', user);
-
-    ctx.user = user; // Set the user object in the context
+    ctx.user = user; 
 
     return true;
   }
-
-  // async handleRequest(auth: string) {
-  //   const [bearer, token] = auth.split(' ');
-  //   if (bearer !== 'Bearer' && !token) {
-  //     throw new UnauthorizedException('Invalid token');
-  //   }
-
-  //   const user = await this.userService.validateToken(token);
-
-  //   if (!user) {
-  //     throw new AuthenticationError('Invalid User');
-  //   }
-
-  //   return user;
-  // }
-
   extractToken(authHeader: string): string | null {
     const [bearer, token] = authHeader.split(' ');
     if (bearer !== 'Bearer' || !token) {

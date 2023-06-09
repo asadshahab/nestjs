@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './auth/jwt-payload.interfase';
 import { HashPassword } from '../utils/common/hash-password';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
-import { MessageConstant } from '../utils/constants/user-message-constants';
+import { UserConstant } from '../utils/constants/message-constants';
 
 @Injectable()
 export class AuthService {
@@ -54,7 +54,7 @@ export class AuthService {
       const { email } = authSignupDto;
       const user = await this.userRepository.findOne({ where: { email } });
       if (user) {
-        throw new ConflictException('User already exists');
+        throw new ConflictException(UserConstant.userAlreadyExists);
       }
       const userData = this.userRepository.create(authSignupDto);
 
@@ -76,13 +76,13 @@ export class AuthService {
 
       const userData = await this.userRepository.findOne({ where: { email } });
       if (!userData) {
-        throw new NotFoundException('User not found');
+        throw new NotFoundException(UserConstant.userNotFound);
       }
 
       // compare the password
       const isMatch = await HashPassword.compare(password, userData.password);
       if (!isMatch) {
-        throw new UnauthorizedException('Invalid credentials');
+        throw new UnauthorizedException(UserConstant.invalidCredentials);
       }
 
       // generate token
@@ -103,15 +103,15 @@ export class AuthService {
     }
   }
 
-  // validate user
+  /**
+   * @description validate token
+   * @param token
+   * @returns the user
+    */
 
   async validateToken(token: string) {
-    const secret = this.jwtService.verify(token);
-    const user = await this.getUser(secret.id);
-    // const roles = await this.userRoleService.findRolesByUserId(user?.id);
-    // const strRoles = roles.map(({ type }) => type);
-    // { roles: strRoles, user: user, secret };
-
+    const tokenPayload = this.jwtService.verify(token);
+    const user = await this.getUser(tokenPayload.id);
     return user;
   }
 }

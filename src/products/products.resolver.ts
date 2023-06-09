@@ -4,13 +4,13 @@ import { CreateProductDto } from './dto/create.product.dto';
 import { Product } from './product.entity';
 import { ProductResponsePayload } from './dto/product-response.dto';
 import { HttpStatus, SetMetadata, UseGuards } from '@nestjs/common';
-import { MessageConstant } from '../utils/constants/product-message-constants';
+import { ProductConstant } from '../utils/constants/message-constants';
 import { UpdateProductDto } from './dto/update.product';
 import { AuthGuard } from '@nestjs/passport';
 import { UserRole } from '../user/user.entity';
 import { GqlAuthGuard } from '../user/auth/jwt-auth-guard';
-import { RolesGuard } from 'src/user/auth/role.guard';
-// import { PaginationResponse } from 'src/utils/common/dto/pagination-response';
+import { RolesGuard } from '../user/auth/role.guard';
+// import { PaginationResponse } from '../utils/common/dto/pagination-response';
 
 @Resolver()
 export class ProductsResolver {
@@ -31,7 +31,7 @@ export class ProductsResolver {
     return {
       response: {
         status: HttpStatus.OK,
-        message: MessageConstant.productRetrieved,
+        message: ProductConstant.productRetrieved,
       },
       product,
     };
@@ -42,7 +42,7 @@ export class ProductsResolver {
   @SetMetadata('roles', [UserRole.SUPERADMIN])
   async addProduct(@Args('input') input: CreateProductDto): Promise<ProductResponsePayload> {
     const product = await this.productsService.createProduct(input);
-    return { response: { status: HttpStatus.OK, message: MessageConstant.productCreated }, product };
+    return { response: { status: HttpStatus.OK, message: ProductConstant.productCreated }, product };
   }
 
   @Mutation(() => ProductResponsePayload)
@@ -51,7 +51,7 @@ export class ProductsResolver {
     return {
       response: {
         status: HttpStatus.OK,
-        message: MessageConstant.productUpdated,
+        message: ProductConstant.productUpdated,
       },
       product,
     };
@@ -66,7 +66,7 @@ export class ProductsResolver {
     return {
       response: {
         status: HttpStatus.OK,
-        message: MessageConstant.productDeleted,
+        message: ProductConstant.productDeleted,
       },
       product,
     };

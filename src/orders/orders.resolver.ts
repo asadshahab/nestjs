@@ -4,7 +4,7 @@ import { Order } from './entities/order.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderResponsePayload } from './dto/oreder-response.dto';
 import { HttpStatus, Req, SetMetadata, UseGuards } from '@nestjs/common';
-import { MessageConstant } from '../utils/constants/order-message-constants';
+import { OrderConstant } from '../utils/constants/message-constants';
 import { GqlAuthGuard } from '../user/auth/jwt-auth-guard';
 import { RolesGuard } from '../user/auth/role.guard';
 import { User, UserRole } from '../user/user.entity';
@@ -22,7 +22,7 @@ export class OrdersResolver {
     return {
       response: {
         status: HttpStatus.OK,
-        message: MessageConstant.orderRetrieved,
+        message: OrderConstant.orderRetrieved,
       },
       order,
     };
@@ -35,7 +35,7 @@ export class OrdersResolver {
     return {
       response: {
         status: HttpStatus.CREATED,
-        message: MessageConstant.orderCreated,
+        message: OrderConstant.orderCreated,
       },
       order,
     };

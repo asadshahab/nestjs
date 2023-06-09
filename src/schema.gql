@@ -101,6 +101,7 @@ input AuthSignupDto {
 
 input AuthSignInDto {
   email: String!
+  password: String!
 }
 
 input CreateOrderDto {

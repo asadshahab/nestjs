@@ -20,7 +20,7 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../user/auth/role.guard';
 import { OrderResponsePayload } from './dto/oreder-response.dto';
-import { MessageConstant } from '../utils/constants/order-message-constants';
+import { OrderConstant } from '../utils/constants/message-constants';
 // import { PaginationResponse } from '../utils/common/dto/pagination-response';
 import { Order } from './entities/order.entity';
 
@@ -41,7 +41,7 @@ export class OrdersController {
     createOrderDto.user = reqUser.user;
     const order = await this.ordersService.createOrder(createOrderDto);
     return {
-      response: { status: HttpStatus.CREATED, message: MessageConstant.orderCreated },
+      response: { status: HttpStatus.CREATED, message: OrderConstant.orderCreated },
       order,
     };
   }
@@ -77,7 +77,7 @@ export class OrdersController {
   async findById(@Param('id') id: number, @Req() reqUser): Promise<OrderResponsePayload> {
     const user = reqUser.user;
     const order = await this.ordersService.findById(id, user);
-    return { response: { status: HttpStatus.OK, message: MessageConstant.orderRetrieved }, order };
+    return { response: { status: HttpStatus.OK, message: OrderConstant.orderRetrieved }, order };
   }
 
   /**
@@ -92,7 +92,7 @@ export class OrdersController {
   async orderUpdate(@Param('id') id: number, @Body() updateOrderDto: UpdateOrderDto, @Req() reqUser) {
     const { user } = reqUser;
     const order = await this.ordersService.updateOrder(id, updateOrderDto, user);
-    return { response: { status: HttpStatus.OK, message: MessageConstant.orderUpdated }, order };
+    return { response: { status: HttpStatus.OK, message: OrderConstant.orderUpdated }, order };
   }
 
   /**
@@ -106,6 +106,6 @@ export class OrdersController {
   async orderDelete(@Param('id') id: number, @Req() reqUser): Promise<OrderResponsePayload> {
     const { user } = reqUser;
     const order = await this.ordersService.deleteOrder(id, user);
-    return { response: { status: HttpStatus.OK, message: MessageConstant.orderDeleted }, order };
+    return { response: { status: HttpStatus.OK, message: OrderConstant.orderDeleted }, order };
   }
 }

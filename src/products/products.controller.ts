@@ -22,9 +22,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../user/auth/role.guard';
 import { ProductResponsePayload } from './dto/product-response.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { MessageConstant } from '../utils/constants/product-message-constants';
+import { ProductConstant } from '../utils/constants/message-constants';
 import { User, UserRole } from '../user/user.entity';
-// import { PaginationResponse } from 'src/utils/common/dto/pagination-response';
+// import { PaginationResponse } from '../utils/common/dto/pagination-response';
 
 @Controller('product')
 export class ProductsController {
@@ -60,7 +60,7 @@ export class ProductsController {
     return {
       response: {
         status: HttpStatus.OK,
-        message: MessageConstant.productRetrieved,
+        message: ProductConstant.productRetrieved,
       },
       product,
     };
@@ -80,7 +80,7 @@ export class ProductsController {
     return {
       response: {
         status: HttpStatus.CREATED,
-        message: MessageConstant.productCreated,
+        message: ProductConstant.productCreated,
       },
       product,
     };
@@ -100,7 +100,7 @@ export class ProductsController {
     return {
       response: {
         status: HttpStatus.OK,
-        message: MessageConstant.productUpdated,
+        message: ProductConstant.productUpdated,
       },
       product,
     };
@@ -119,7 +119,7 @@ export class ProductsController {
     return {
       response: {
         status: HttpStatus.OK,
-        message: MessageConstant.productDeleted,
+        message: ProductConstant.productDeleted,
       },
       product,
     };

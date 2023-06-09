@@ -9,4 +9,8 @@ export class AuthSignInDto extends PickType(AuthSignupDto, ['email', 'password',
   @IsNotEmpty()
   @Field()
   email: string;
+
+  @IsNotEmpty()
+  @Field()
+  password: string;
 }
