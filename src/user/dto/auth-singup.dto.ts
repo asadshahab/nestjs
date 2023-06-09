@@ -16,7 +16,6 @@ export class AuthSignupDto {
   @Field()
   phoneNum?: string;
 
-  //   only allow ENUM values
   @IsEnum(UserRole)
   @IsNotEmpty()
   @Field()

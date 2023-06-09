@@ -88,7 +88,10 @@ enum ProductStatus {
 }
 
 input UpdateProductDto {
-  name: String!
+  name: String
+  description: String
+  price: Float
+  status: ProductStatus = ACTIVE
 }
 
 input AuthSignupDto {

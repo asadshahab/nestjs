@@ -1,9 +1,9 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { HttpStatus, SetMetadata, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { Order } from './entities/order.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderResponsePayload } from './dto/oreder-response.dto';
-import { HttpStatus, Req, SetMetadata, UseGuards } from '@nestjs/common';
 import { OrderConstant } from '../utils/constants/message-constants';
 import { GqlAuthGuard } from '../user/auth/jwt-auth-guard';
 import { RolesGuard } from '../user/auth/role.guard';
