@@ -1,0 +1,120 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  phoneNum: String!
+  role: UserRole!
+  password: String!
+  order: Order
+}
+
+enum UserRole {
+  ADMIN
+  SUPERADMIN
+  CUSTOMER
+  VENDOR
+}
+
+type Order {
+  id: ID!
+  product: [Product!]!
+  user: User!
+  quantity: Int!
+  status: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Product {
+  id: ID!
+  name: String!
+  description: String!
+  price: Int!
+  status: String!
+  order: Order!
+}
+
+type Response {
+  name: String!
+  status: Int!
+  error: String!
+  message: String!
+}
+
+type AuthSingInResponsePayload {
+  response: Response!
+  user: User!
+  accessToken: String!
+}
+
+type ProductResponsePayload {
+  response: Response!
+  product: Product
+}
+
+type OrderResponsePayload {
+  response: Response!
+  order: Order!
+}
+
+type Query {
+  getProductById(id: Float!): ProductResponsePayload!
+  orderById(id: Float!): Order!
+}
+
+type Mutation {
+  addProduct(input: CreateProductDto!): ProductResponsePayload!
+  updateProduct(id: Float!, input: UpdateProductDto!): ProductResponsePayload!
+  deleteProduct(id: Float!): ProductResponsePayload!
+  signupUser(authSignupDto: AuthSignupDto!): AuthSingInResponsePayload!
+  signInUser(authSignInDto: AuthSignInDto!): AuthSingInResponsePayload!
+  createOrder(createOrderInput: CreateOrderDto!): OrderResponsePayload!
+}
+
+input CreateProductDto {
+  name: String!
+  description: String!
+  price: Float!
+  status: ProductStatus! = ACTIVE
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+}
+
+input UpdateProductDto {
+  name: String!
+}
+
+input AuthSignupDto {
+  username: String!
+  email: String!
+  phoneNum: String!
+  role: String!
+  password: String!
+}
+
+input AuthSignInDto {
+  email: String!
+}
+
+input CreateOrderDto {
+  productList: [ProductList!]!
+  user: AuthSignupDto!
+  status: OrderStatus! = PENDING
+}
+
+input ProductList {
+  product: CreateProductDto!
+  quantity: Int!
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+}

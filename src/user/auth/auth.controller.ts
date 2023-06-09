@@ -20,7 +20,7 @@ import { AuthSignInDto } from '../dto/auth-singin.dto ';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthSingInResponsePayload } from '../dto/auth-singin-response.dto';
 import { MessageConstant } from '../../utils/constants/user-message-constants';
-import { PaginationResponse } from '../../utils/common/dto/pagination-response';
+// import { PaginationResponse } from '../../utils/common/dto/pagination-response';
 import { User } from '../user.entity';
 
 @Controller('user')
@@ -33,18 +33,18 @@ export class AuthController {
    * @returns return all users
    */
   @Get('/view')
-  @UseGuards(AuthGuard())
-  async getUsers(
-    @Req() req,
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
-  ): Promise<PaginationResponse<User>> {
-    const usersData = await this.authService.paginate({
-      page,
-      limit,
-    });
-    return { response: { status: HttpStatus.OK, message: MessageConstant.userRetrieved }, data: usersData };
-  }
+  // @UseGuards(AuthGuard())
+  // async getUsers(
+  //   @Req() req,
+  //   @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+  //   @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  // ): Promise<PaginationResponse<User>> {
+  //   const usersData = await this.authService.paginate({
+  //     page,
+  //     limit,
+  //   });
+  //   return { response: { status: HttpStatus.OK, message: MessageConstant.userRetrieved }, data: usersData };
+  // }
 
   /**
    * @description sign-up user

@@ -21,7 +21,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../user/auth/role.guard';
 import { OrderResponsePayload } from './dto/oreder-response.dto';
 import { MessageConstant } from '../utils/constants/order-message-constants';
-import { PaginationResponse } from '../utils/common/dto/pagination-response';
+// import { PaginationResponse } from '../utils/common/dto/pagination-response';
 import { Order } from './entities/order.entity';
 
 @Controller('order')
@@ -39,10 +39,10 @@ export class OrdersController {
   @UsePipes(ValidationPipe)
   async orderCreate(@Body() createOrderDto: CreateOrderDto, @Req() reqUser): Promise<OrderResponsePayload> {
     createOrderDto.user = reqUser.user;
-    const orderData = await this.ordersService.createOrder(createOrderDto);
+    const order = await this.ordersService.createOrder(createOrderDto);
     return {
       response: { status: HttpStatus.CREATED, message: MessageConstant.orderCreated },
-      data: orderData,
+      order,
     };
   }
 
@@ -51,19 +51,19 @@ export class OrdersController {
    * @param CreateOrderDto
    * @Auth bearer token
    * @returns
-   */
-  @Get('/view')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  async findAll(@Query('page', ParseIntPipe) page: number, @Query('limit', ParseIntPipe) limit: number): Promise<PaginationResponse<Order>> {
-    const orderData = await this.ordersService.paginate({
-      page,
-      limit,
-    });
-    return {
-      response: { status: HttpStatus.OK, message: MessageConstant.orderRetrieved },
-      data: orderData,
-    };
-  }
+  //  */
+  // @Get('/view')
+  // @UseGuards(AuthGuard('jwt'), RolesGuard)
+  // async findAll(@Query('page', ParseIntPipe) page: number, @Query('limit', ParseIntPipe) limit: number): Promise<PaginationResponse<Order>> {
+  //   const orderData = await this.ordersService.paginate({
+  //     page,
+  //     limit,
+  //   });
+  //   return {
+  //     response: { status: HttpStatus.OK, message: MessageConstant.orderRetrieved },
+  //     data: orderData,
+  //   };
+  // }
 
   /**
    * @description get one order
@@ -76,8 +76,8 @@ export class OrdersController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async findById(@Param('id') id: number, @Req() reqUser): Promise<OrderResponsePayload> {
     const user = reqUser.user;
-    const data = await this.ordersService.findById(id, user);
-    return { response: { status: HttpStatus.OK, message: MessageConstant.orderRetrieved }, data: data };
+    const order = await this.ordersService.findById(id, user);
+    return { response: { status: HttpStatus.OK, message: MessageConstant.orderRetrieved }, order };
   }
 
   /**
@@ -91,8 +91,8 @@ export class OrdersController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async orderUpdate(@Param('id') id: number, @Body() updateOrderDto: UpdateOrderDto, @Req() reqUser) {
     const { user } = reqUser;
-    const orderData = await this.ordersService.updateOrder(id, updateOrderDto, user);
-    return { response: { status: HttpStatus.OK, message: MessageConstant.orderUpdated }, data: orderData };
+    const order = await this.ordersService.updateOrder(id, updateOrderDto, user);
+    return { response: { status: HttpStatus.OK, message: MessageConstant.orderUpdated }, order };
   }
 
   /**
@@ -105,8 +105,7 @@ export class OrdersController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async orderDelete(@Param('id') id: number, @Req() reqUser): Promise<OrderResponsePayload> {
     const { user } = reqUser;
-
-    const orderData = await this.ordersService.deleteOrder(id, user);
-    return { response: { status: HttpStatus.OK, message: MessageConstant.orderDeleted }, data: orderData };
+    const order = await this.ordersService.deleteOrder(id, user);
+    return { response: { status: HttpStatus.OK, message: MessageConstant.orderDeleted }, order };
   }
 }

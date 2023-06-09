@@ -88,6 +88,7 @@ export class AuthService {
       // generate token
       const payload: JwtPayload = {
         username: userData.username,
+        id: userData.id,
         role: userData.role,
       };
 
@@ -100,5 +101,17 @@ export class AuthService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  // validate user
+
+  async validateToken(token: string) {
+    const secret = this.jwtService.verify(token);
+    const user = await this.getUser(secret.id);
+    // const roles = await this.userRoleService.findRolesByUserId(user?.id);
+    // const strRoles = roles.map(({ type }) => type);
+    // { roles: strRoles, user: user, secret };
+
+    return user;
   }
 }

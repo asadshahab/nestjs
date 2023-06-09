@@ -24,7 +24,7 @@ import { ProductResponsePayload } from './dto/product-response.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { MessageConstant } from '../utils/constants/product-message-constants';
 import { User, UserRole } from '../user/user.entity';
-import { PaginationResponse } from 'src/utils/common/dto/pagination-response';
+// import { PaginationResponse } from 'src/utils/common/dto/pagination-response';
 
 @Controller('product')
 export class ProductsController {
@@ -38,16 +38,16 @@ export class ProductsController {
   @Get('/view')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @SetMetadata('roles', [UserRole.SUPERADMIN, UserRole.ADMIN])
-  async getAllProducts(@Query('page', ParseIntPipe) page: number, @Query('limit', ParseIntPipe) limit: number): Promise<PaginationResponse<Product>> {
-    const data = await this.productsService.paginate({
-      page,
-      limit,
-    });
-    return {
-      response: { status: HttpStatus.OK, message: MessageConstant.productRetrieved },
-      data,
-    };
-  }
+  // async getAllProducts(@Query('page', ParseIntPipe) page: number, @Query('limit', ParseIntPipe) limit: number): Promise<PaginationResponse<Product>> {
+  //   const data = await this.productsService.paginate({
+  //     page,
+  //     limit,
+  //   });
+  //   return {
+  //     response: { status: HttpStatus.OK, message: MessageConstant.productRetrieved },
+  //     data,
+  //   };
+  // }
 
   /**
    *
