@@ -26,15 +26,8 @@ export class ProductsResolver {
   @Query(() => ProductResponsePayload)
   @SetMetadata('roles', [UserRole.VENDOR])
   async getProductById(@Args('id') id: number): Promise<ProductResponsePayload> {
-    console.log('get product by id resolver');
     const product = await this.productsService.getProductById(id);
-    return {
-      response: {
-        status: HttpStatus.OK,
-        message: ProductConstant.productRetrieved,
-      },
-      product,
-    };
+    return { response: { status: HttpStatus.OK, message: ProductConstant.productRetrieved }, product };
   }
 
   @Mutation(() => ProductResponsePayload)
@@ -48,13 +41,7 @@ export class ProductsResolver {
   @Mutation(() => ProductResponsePayload)
   async updateProduct(@Args('id') id: number, @Args('input') input: UpdateProductDto): Promise<ProductResponsePayload> {
     const product = await this.productsService.updateProductById(id, input);
-    return {
-      response: {
-        status: HttpStatus.OK,
-        message: ProductConstant.productUpdated,
-      },
-      product,
-    };
+    return { response: { status: HttpStatus.OK, message: ProductConstant.productUpdated }, product };
   }
 
   @Mutation(() => ProductResponsePayload)
@@ -63,12 +50,6 @@ export class ProductsResolver {
   async deleteProduct(@Args('id') id: number): Promise<ProductResponsePayload> {
     console.log('delete product resolver');
     const product = await this.productsService.deleteProductById(id);
-    return {
-      response: {
-        status: HttpStatus.OK,
-        message: ProductConstant.productDeleted,
-      },
-      product,
-    };
+    return { response: { status: HttpStatus.OK, message: ProductConstant.productDeleted }, product };
   }
 }

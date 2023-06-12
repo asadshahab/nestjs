@@ -76,11 +76,8 @@ export class ProductsService {
     if (product) {
       throw new BadRequestException(ProductConstant.productExist);
     }
-    const data = await this.productRepository.save(createProductDto);
-    if (!data) {
-      throw new BadRequestException(ProductConstant.productNotCreated);
-    }
-    return data;
+    const productData = this.productRepository.create(createProductDto);
+    return await productData.save();;
   }
 
   /**
@@ -93,11 +90,9 @@ export class ProductsService {
     try {
       const product = await this.getProductById(id);
       if (!product) {
-        throw new NotFoundException(ProductConstant.productNotFound);
+        throw new NotFoundException(ProductConstant?.productNotFound);
       }
-      const updatedProduct = await this.productRepository.save({ ...product, ...updateProductDto });
-
-      return updatedProduct;
+      return await this.productRepository.save({ ...product, ...updateProductDto });
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

@@ -73,6 +73,8 @@ type Mutation {
   signupUser(authSignupDto: AuthSignupDto!): AuthSingInResponsePayload!
   signInUser(authSignInDto: AuthSignInDto!): AuthSingInResponsePayload!
   createOrder(createOrderInput: CreateOrderDto!): OrderResponsePayload!
+  updateOrder(id: Float!, updateOrderInput: CreateOrderDto!): OrderResponsePayload!
+  deleteOrder(id: Float!): OrderResponsePayload!
 }
 
 input CreateProductDto {

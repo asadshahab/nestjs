@@ -23,16 +23,9 @@ export class OrdersService {
     try {
       const { productList, status, user } = createOrderDto;
 
-      const products: Product[] = productList.map((product) => product.product);
-      await Promise.all(
-        products.map(async (element) => {
-          const productData = await this.productService.getProductById(element.id);
-          if (!productData) {
-            throw new NotFoundException(OrderConstant.productNotFound);
-          }
-        }),
-      );
 
+
+      const products = await this.validateProduct(productList);
       const orderInstances = await this.orderRepository.create({
         status: status,
         product: products,
@@ -125,5 +118,24 @@ export class OrdersService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  // product validation
+  async validateProduct(productList): Promise<Product[]> {
+ try{
+    const products: Product[] = productList.map((product) => product.product);
+    await Promise.all(
+      products.map(async (element) => {
+        const productData = await this.productService.getProductById(element.id);
+        if (!productData) {
+          throw new NotFoundException(OrderConstant.productNotFound);
+        }
+      }),
+    );
+
+    return products;
+  } catch (error) {
+    throw new InternalServerErrorException(error);
+  }
   }
 }
