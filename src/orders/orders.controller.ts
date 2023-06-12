@@ -23,8 +23,10 @@ import { OrderResponsePayload } from './dto/oreder-response.dto';
 import { OrderConstant } from '../utils/constants/message-constants';
 // import { PaginationResponse } from '../utils/common/dto/pagination-response';
 import { Order } from './entities/order.entity';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 
 @Controller('order')
+@ApiTags('Order')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
@@ -35,6 +37,7 @@ export class OrdersController {
    * @returns the order created
    */
   @Post('/create')
+  @ApiSecurity('JWT-auth')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @UsePipes(ValidationPipe)
   async orderCreate(@Body() createOrderDto: CreateOrderDto, @Req() reqUser): Promise<OrderResponsePayload> {
@@ -73,6 +76,7 @@ export class OrdersController {
    */
 
   @Get('/view/:id')
+  @ApiSecurity('JWT-auth')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async findById(@Param('id') id: number, @Req() reqUser): Promise<OrderResponsePayload> {
     const user = reqUser.user;
@@ -88,6 +92,7 @@ export class OrdersController {
    * @returns return the order
    */
   @Put('/edit/:id')
+  @ApiSecurity('JWT-auth')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async orderUpdate(@Param('id') id: number, @Body() updateOrderDto: UpdateOrderDto, @Req() reqUser) {
     const { user } = reqUser;
@@ -102,6 +107,7 @@ export class OrdersController {
    * @returns return the order
    */
   @Delete('/delete/:id')
+  @ApiSecurity('JWT-auth')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async orderDelete(@Param('id') id: number, @Req() reqUser): Promise<OrderResponsePayload> {
     const { user } = reqUser;
