@@ -5,49 +5,37 @@ import {
   Body,
   UsePipes,
   ValidationPipe,
-  UseGuards,
-  Req,
   UseInterceptors,
   ClassSerializerInterceptor,
   HttpStatus,
-  Query,
-  DefaultValuePipe,
-  ParseIntPipe,
+  Query
 } from '@nestjs/common';
 import { AuthService } from '../user.service';
 import { AuthSignupDto } from '../dto/auth-singup.dto';
 import { AuthSignInDto } from '../dto/auth-singin.dto ';
-import { AuthGuard } from '@nestjs/passport';
 import { AuthSingInResponsePayload } from '../dto/auth-singin-response.dto';
 import { UserConstant } from '../../utils/constants/message-constants';
-// import { PaginationResponse } from '../../utils/common/dto/pagination-response';
 import { User } from '../user.entity';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import PaginationPayloadInterface from '../../pagination/dto/pagination-payload-interface.dto';
+import { PaginationService } from '../../pagination/pagination.service';
 
 @Controller('user')
 @ApiTags('Auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private readonly paginationService: PaginationService) {}
 
-  /**
-   * @description get all users
-   * @param req
-   * @returns return all users
+   /**
+   * Get all users with pagination
+   * @param page Current page number
+   * @param limit Number of records per page
+   * @returns Paginated response of users
    */
-  // @Get('/view')
-  // // @UseGuards(AuthGuard())
-  // // async getUsers(
-  // //   @Req() req,
-  // //   @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-  // //   @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
-  // // ): Promise<PaginationResponse<User>> {
-  // //   const usersData = await this.authService.paginate({
-  // //     page,
-  // //     limit,
-  // //   });
-  // //   return { response: { status: HttpStatus.OK, message: MessageConstant.userRetrieved }, data: usersData };
-  // // }
-
+   @Get('/view')
+   async getUsers(
+     @Query('page') page: number, @Query('limit') limit: number): Promise<PaginationPayloadInterface<User>> {
+     return this.authService.paginateUser(page, limit);
+   }
   /**
    * @description sign-up user
    * @param authSignupDto

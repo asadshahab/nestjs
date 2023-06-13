@@ -6,14 +6,14 @@ import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create.product.dto';
 import { UpdateProductDto } from './dto/update.product';
 import { FilterProductDto } from './dto/filter.product.dto';
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { ProductConstant } from '../utils/constants/message-constants';
+import PaginationPayloadInterface from '../pagination/dto/pagination-payload-interface.dto';
+import { PaginationService } from '../pagination/pagination.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
-    @InjectRepository(Product)
-    private productRepository: Repository<Product>,
+    @InjectRepository(Product) private productRepository: Repository<Product>, private readonly paginationService: PaginationService
   ) {}
 
   /**
@@ -48,8 +48,8 @@ export class ProductsService {
    * @returns return all products with pagination
    */
 
-  async paginate(options: IPaginationOptions): Promise<Pagination<Product>> {
-    return paginate<Product>(this.productRepository, options);
+  async paginateProduct(page:number, limit:number): Promise<PaginationPayloadInterface<Product>> {
+    return this.paginationService.paginate<Product>(this.productRepository, page, limit);
   }
 
   /**
@@ -74,10 +74,10 @@ export class ProductsService {
     const { name } = createProductDto;
     const product = await this.productRepository.findOne({ where: { name } });
     if (product) {
-      throw new BadRequestException(ProductConstant.productExist);
+      throw new BadRequestException(ProductConstant?.productExist);
     }
     const productData = this.productRepository.create(createProductDto);
-    return await productData.save();;
+    return await productData?.save();;
   }
 
   /**
@@ -107,11 +107,11 @@ export class ProductsService {
     try {
       const data = await this.getProductById(id);
       if (!data) {
-        throw new NotFoundException(ProductConstant.productNotFound);
+        throw new NotFoundException(ProductConstant?.productNotFound);
       }
       const deletedData = await this.productRepository.delete(id);
       if (deletedData.affected == 0) {
-        throw new NotFoundException(ProductConstant.productNotDeleted);
+        throw new NotFoundException(ProductConstant?.productNotDeleted);
       }
       return data;
     } catch (error) {

@@ -21,11 +21,10 @@ import { Product } from './product.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../user/auth/role.guard';
 import { ProductResponsePayload } from './dto/product-response.dto';
-import { Pagination } from 'nestjs-typeorm-paginate';
 import { ProductConstant } from '../utils/constants/message-constants';
-import { User, UserRole } from '../user/user.entity';
+import {  UserRole } from '../user/user.entity';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
-// import { PaginationResponse } from '../utils/common/dto/pagination-response';
+import PaginationPayloadInterface from '../pagination/dto/pagination-payload-interface.dto';
 
 @Controller('product')
 @ApiTags('Product')
@@ -34,23 +33,14 @@ export class ProductsController {
 
   /**
    *
-   * @param filterProductDto
-   * @returns return a list of products
+   * @param page
+   * @param limit 
+   * @returns return a list of products with pagination
    */
   @Get('/view')
-  @ApiSecurity('JWT-auth')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @SetMetadata('roles', [UserRole.SUPERADMIN, UserRole.ADMIN])
-  // async getAllProducts(@Query('page', ParseIntPipe) page: number, @Query('limit', ParseIntPipe) limit: number): Promise<PaginationResponse<Product>> {
-  //   const data = await this.productsService.paginate({
-  //     page,
-  //     limit,
-  //   });
-  //   return {
-  //     response: { status: HttpStatus.OK, message: MessageConstant.productRetrieved },
-  //     data,
-  //   };
-  // }
+  async getProducts( @Query('page') page: number, @Query('limit') limit: number): Promise<PaginationPayloadInterface<Product>> {
+    return this.productsService.paginateProduct(page, limit);
+  }
 
   /**
    *
@@ -61,14 +51,7 @@ export class ProductsController {
   @ApiSecurity('JWT-auth')
   async getProductById(@Param('id', ParseIntPipe) id: number): Promise<ProductResponsePayload> {
     const product = await this.productsService.getProductById(id);
-    return {
-      response: {
-        status: HttpStatus.OK,
-        message: ProductConstant.productRetrieved,
-      },
-      product,
-    };
-  }
+    return {response: {status: HttpStatus.OK, message: ProductConstant.productRetrieved}, product}; }
 
   /**
    *
@@ -76,19 +59,10 @@ export class ProductsController {
    * @returns
    */
   @Post('/create')
-  @ApiSecurity('JWT-auth')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @SetMetadata('roles', [UserRole.SUPERADMIN, UserRole.ADMIN])
   @UsePipes(ValidationPipe)
   async createProduct(@Body() createProductDto: CreateProductDto): Promise<ProductResponsePayload> {
     const product = await this.productsService.createProduct(createProductDto);
-    return {
-      response: {
-        status: HttpStatus.CREATED,
-        message: ProductConstant.productCreated,
-      },
-      product,
-    };
+    return {response: { status: HttpStatus.CREATED,message: ProductConstant?.productCreated }, product};
   }
 
   /**
@@ -103,13 +77,7 @@ export class ProductsController {
   @SetMetadata('roles', [UserRole.SUPERADMIN, UserRole.ADMIN])
   async updateProductById(@Param('id', ParseIntPipe) id: number, @Body() updateProductDto: UpdateProductDto): Promise<ProductResponsePayload> {
     const product = await this.productsService.updateProductById(id, updateProductDto);
-    return {
-      response: {
-        status: HttpStatus.OK,
-        message: ProductConstant.productUpdated,
-      },
-      product,
-    };
+    return {response: { status: HttpStatus.OK, message: ProductConstant.productUpdated }, product};
   }
 
   /**
@@ -123,12 +91,6 @@ export class ProductsController {
   @SetMetadata('roles', [UserRole.SUPERADMIN, UserRole.ADMIN])
   async deleteProductById(@Param('id', ParseIntPipe) id: number): Promise<ProductResponsePayload> {
     const product = await this.productsService.deleteProductById(id);
-    return {
-      response: {
-        status: HttpStatus.OK,
-        message: ProductConstant.productDeleted,
-      },
-      product,
-    };
+    return {response: {status: HttpStatus.OK, message: ProductConstant.productDeleted}, product}; 
   }
 }

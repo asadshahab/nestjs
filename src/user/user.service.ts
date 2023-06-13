@@ -7,15 +7,17 @@ import { AuthSignInDto } from './dto/auth-singin.dto ';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './auth/jwt-payload.interfase';
 import { HashPassword } from '../utils/common/hash-password';
-import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { UserConstant } from '../utils/constants/message-constants';
+import PaginationPayloadInterface from '../pagination/dto/pagination-payload-interface.dto';
+import { PaginationService } from '../pagination/pagination.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private jwtService: JwtService,
+    private readonly jwtService: JwtService,
+    private readonly paginationService: PaginationService
   ) {}
 
   /**
@@ -26,8 +28,8 @@ export class AuthService {
    * @returns total users
    */
 
-  async paginate(options: IPaginationOptions): Promise<Pagination<User>> {
-    return paginate<User>(this.userRepository, options);
+  async paginateUser(page:number, limit:number): Promise<PaginationPayloadInterface<User>> {
+    return this.paginationService.paginate<User>(this.userRepository, page, limit);
   }
 
   /**

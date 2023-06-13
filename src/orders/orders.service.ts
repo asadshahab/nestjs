@@ -9,10 +9,12 @@ import { ProductsService } from '../products/products.service';
 import { Product } from '../products/product.entity';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { OrderConstant } from '../utils/constants/message-constants';
+import PaginationPayloadInterface from '../pagination/dto/pagination-payload-interface.dto';
+import { PaginationService } from '../pagination/pagination.service';
 
 @Injectable()
 export class OrdersService {
-  constructor(@InjectRepository(Order) private orderRepository: Repository<Order>, private productService: ProductsService) {}
+  constructor(@InjectRepository(Order) private orderRepository: Repository<Order>, private productService: ProductsService, private readonly paginationService: PaginationService) {}
 
   /**
    * @description create order
@@ -46,8 +48,8 @@ export class OrdersService {
    * @returns total Orders
    */
 
-  async paginate(options: IPaginationOptions): Promise<Pagination<Order>> {
-    return paginate<Order>(this.orderRepository, options);
+  async paginateOrder(page:number, limit:number): Promise<PaginationPayloadInterface<Order>> {
+    return this.paginationService.paginate<Order>(this.orderRepository, page, limit);
   }
 
   /**
@@ -56,11 +58,11 @@ export class OrdersService {
    * @param user
    * @returns return one order
    */
-  async findById(id: number, user: User): Promise<Order> {
+  async findById(id: number, user:User): Promise<Order> {
     try {
       const orderData = await this.orderRepository.findOne({
         relations: ['user', 'product'],
-        where: { id, user: { id: user.id } },
+        where: {id},
       });
       return orderData;
     } catch (error) {
@@ -80,20 +82,20 @@ export class OrdersService {
       const { status, productList } = updateOrderDto;
       const orderData = await this.findById(id, user);
       if (!orderData) {
-        throw new NotFoundException(OrderConstant.orderNotFound);
+        throw new NotFoundException(OrderConstant?.orderNotFound);
       }
       await Promise.all(
         productList.map(async (product) => {
-          const productId = product.product.id;
+          const productId = product?.product?.id;
           const productData = await this.productService.getProductById(productId);
           if (!productData) {
-            throw new NotFoundException(OrderConstant.productNotFound);
+            throw new NotFoundException(OrderConstant?.productNotFound);
           }
         }),
       );
       const updateData = await this.orderRepository.save({
         status: status,
-        quantity: productList.length,
+        quantity: productList?.length,
       });
       return updateData;
     } catch (error) {
@@ -109,7 +111,7 @@ export class OrdersService {
    */
   async deleteOrder(id: number, user: User) {
     try {
-      const orderData = await this.findById(id, user);
+      const orderData = await this.findById(id,user);
       if (!orderData) {
         throw new NotFoundException(OrderConstant.orderNotFound);
       }
@@ -123,10 +125,10 @@ export class OrdersService {
   // product validation
   async validateProduct(productList): Promise<Product[]> {
  try{
-    const products: Product[] = productList.map((product) => product.product);
+    const products: Product[] = productList?.map((product) => product?.product);
     await Promise.all(
       products.map(async (element) => {
-        const productData = await this.productService.getProductById(element.id);
+        const productData = await this.productService.getProductById(element?.id);
         if (!productData) {
           throw new NotFoundException(OrderConstant.productNotFound);
         }

@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './product.entity';
 import { AuthModule } from '../user/user.module';
 import { ProductsResolver } from './products.resolver';
+import { PaginationModule } from '../pagination/pagination.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product]), AuthModule],
+  imports: [TypeOrmModule.forFeature([Product]), AuthModule, PaginationModule],
 
   controllers: [ProductsController],
   providers: [ProductsService, ProductsResolver],

@@ -10,7 +10,6 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserRole } from '../user/user.entity';
 import { GqlAuthGuard } from '../user/auth/jwt-auth-guard';
 import { RolesGuard } from '../user/auth/role.guard';
-// import { PaginationResponse } from '../utils/common/dto/pagination-response';
 
 @Resolver()
 export class ProductsResolver {

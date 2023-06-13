@@ -11,6 +11,7 @@ import configServices from './config/configServices';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
+import { PaginationModule } from './pagination/pagination.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { join } from 'path';
     ProductsModule,
     AuthModule,
     OrdersModule,
+    PaginationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
