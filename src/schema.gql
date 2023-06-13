@@ -51,6 +51,14 @@ type AuthSingInResponsePayload {
   accessToken: String!
 }
 
+type AuthPaginationResponse {
+  page: Int!
+  limit: Int!
+  totalCount: Int!
+  totalPages: Int!
+  data: [User!]!
+}
+
 type ProductResponsePayload {
   response: Response!
   product: Product
@@ -63,6 +71,7 @@ type OrderResponsePayload {
 
 type Query {
   getProductById(id: Float!): ProductResponsePayload!
+  findAllUsers(page: Int!, limit: Int!): AuthPaginationResponse!
   orderById(id: Float!): Order!
 }
 
