@@ -10,7 +10,7 @@ import * as dotenv from 'dotenv';
 import { UserSubscriber } from './subscriber/user-subscriber';
 import { ConfigService } from '@nestjs/config';
 import { AuthResolver } from './auth/auth.resolver';
-import { PaginationModule } from 'src/pagination/pagination.module';
+import { PaginationModule } from '../pagination/pagination.module';
 dotenv.config();
 
 @Module({

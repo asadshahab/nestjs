@@ -6,8 +6,8 @@ import { AuthSingInResponsePayload } from '../dto/auth-singin-response.dto';
 import { UserConstant } from '../../utils/constants/message-constants';
 import { User } from '../user.entity';
 import { HttpStatus } from '@nestjs/common';
-import PaginationPayloadInterface from 'src/pagination/dto/pagination-payload-interface.dto';
 import { AuthPaginationResponse } from '../dto/auth-pagination.dto';
+import { PaginationInputInterface } from '../../pagination/dto/pagination-input.dto';
 
 @Resolver(User)
 export class AuthResolver {
@@ -15,8 +15,8 @@ export class AuthResolver {
 
 
   @Query(() => AuthPaginationResponse)
-  async findAllUsers(@Args('page',{type: ()=> Int}) page: number, @Args('limit', {type: ()=> Int}) limit: number): Promise<AuthPaginationResponse> {
-    console.log('page', page);
+  async findAllUsers(@Args('paginationInputDto') paginationInputDto: PaginationInputInterface): Promise<AuthPaginationResponse> {
+    const {page, limit} = paginationInputDto
     const data =  await this.authService.paginateUser(page, limit);
     return data;
   }

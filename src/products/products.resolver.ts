@@ -10,17 +10,20 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserRole } from '../user/user.entity';
 import { GqlAuthGuard } from '../user/auth/jwt-auth-guard';
 import { RolesGuard } from '../user/auth/role.guard';
+import { AuthPaginationResponse } from './dto/auth-pagination.dto';
+import { PaginationInputInterface } from '../pagination/dto/pagination-input.dto';
 
 @Resolver()
 export class ProductsResolver {
   constructor(private readonly productsService: ProductsService) {}
 
-  //   @Query(() => PaginationResponse)
-  //   async products(@Args('page') page: number, @Args('limit') limit: number) {
-  //     limit = limit > 100 ? 100 : limit;
-  //     return 'hello';
-  //   }
-
+  // @Query(() => AuthPaginationResponse)
+  // async findAllUsers(@Args('paginationInputDto') paginationInputDto: PaginationInputInterface): Promise<AuthPaginationResponse> {
+  //   const {page, limit} = paginationInputDto
+  //   const data =  await this.productsService.(page, limit);
+  //   return data;
+  // }
+  
   @UseGuards(GqlAuthGuard)
   @Query(() => ProductResponsePayload)
   @SetMetadata('roles', [UserRole.VENDOR])

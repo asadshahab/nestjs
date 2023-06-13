@@ -71,8 +71,13 @@ type OrderResponsePayload {
 
 type Query {
   getProductById(id: Float!): ProductResponsePayload!
-  findAllUsers(page: Int!, limit: Int!): AuthPaginationResponse!
+  findAllUsers(paginationInputDto: PaginationInputInterface!): AuthPaginationResponse!
   orderById(id: Float!): Order!
+}
+
+input PaginationInputInterface {
+  page: Int!
+  limit: Int!
 }
 
 type Mutation {
